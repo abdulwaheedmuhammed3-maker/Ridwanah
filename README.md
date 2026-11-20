@@ -34,6 +34,7 @@ The current build is a static Astro website. It does not include accounts, a med
 - Lightweight CSS; no UI framework or runtime database
 - YouTube privacy-enhanced embeds for selected videos
 - GitHub repository and GitHub Actions validation
+- Playwright browser smoke tests at desktop, tablet and Android-sized viewport dimensions
 
 The website is designed to remain simple to build and host. No production hosting provider is configured in this repository yet.
 
@@ -56,10 +57,11 @@ Run the checks before committing:
 npm run check
 npm run build
 npm run audit
+npm run test:e2e
 npm run preview
 ```
 
-GitHub Actions runs `npm run check`, `npm run build` and `npm run audit` on pushes to `main` and on pull requests targeting `main`. The audit checks required output routes, internal links, page metadata, basic accessibility landmarks, image alternatives, iframe titles, external new-tab link safety and unfinished placeholder copy. Astro generates `404.astro` as the special `404.html` page used by static hosts; it is not a normal `/404` route.
+GitHub Actions runs `npm run check`, `npm run build`, `npm run audit` and Playwright browser tests on pushes to `main` and on pull requests targeting `main`. The browser suite emulates desktop, a 768px tablet viewport and a Pixel 7-sized Android viewport. Emulation is not a substitute for testing a physical device. The audit checks required output routes, internal links, page metadata, basic accessibility landmarks, image alternatives, iframe titles, external new-tab link safety and unfinished placeholder copy. Astro generates `404.astro` as the special `404.html` page used by static hosts; it is not a normal `/404` route.
 
 ## Content structure
 
