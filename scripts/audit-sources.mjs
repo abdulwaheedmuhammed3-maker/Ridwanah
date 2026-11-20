@@ -37,6 +37,24 @@ for (const segment of articleSegments) {
 }
 
 const newsSegments = files.news.split(/\n\s*slug:\s*"/).slice(1);
+
+function validateSlugs(segments, label) {
+  const seen = new Map();
+  for (const segment of segments) {
+    const slug = segment.split('"')[0];
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      problems.push(label + " " + slug + ": slug must use lowercase letters, numbers and single hyphen separators");
+    }
+    if (seen.has(slug)) {
+      problems.push(label + ": duplicate slug " + slug + " (also used by " + seen.get(slug) + ")");
+    } else {
+      seen.set(slug, slug);
+    }
+  }
+}
+
+validateSlugs(articleSegments, "Article");
+validateSlugs(newsSegments, "News");
 for (const segment of newsSegments) {
   const slug = segment.split('"')[0];
   const sourceFields = segment.match(/sourceName:\s*"[^"]*"\s*,[\s\S]*?sourceUrl:\s*"[^"]*"/);
