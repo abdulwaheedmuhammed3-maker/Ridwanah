@@ -232,7 +232,7 @@ export const articles: HealthArticle[] = [
         sourceDate: "WHO fact sheet, accessed 20 November 2026"
       }
     ]
-  }
+  },
   {
     slug: "menstrual-health-understanding-your-cycle",
     title: "Menstrual health: understanding your cycle with confidence",
