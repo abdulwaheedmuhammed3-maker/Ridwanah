@@ -42,6 +42,7 @@ const htmlFiles = await collectHtml(dist);
 const brokenLinks = [];
 const metadataProblems = [];
 const placeholderPages = [];
+const accessibilityProblems = [];
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");
@@ -52,6 +53,21 @@ for (const htmlFile of htmlFiles) {
   if (!/<meta\s+property="og:title"/i.test(html)) metadataProblems.push(relative + ": missing Open Graph title");
 
   if (/COMING SOON|IN DEVELOPMENT/i.test(html)) placeholderPages.push(relative);
+
+  if (!/<html[^>]+lang="en"/i.test(html)) accessibilityProblems.push(relative + ": missing document language");
+  if (!/<main\b/i.test(html)) accessibilityProblems.push(relative + ": missing main landmark");
+  if (!/<a\b[^>]*class="skip-link"/i.test(html)) accessibilityProblems.push(relative + ": missing skip link");
+  const h1Count = [...html.matchAll(/<h1\b/gi)].length;
+  if (h1Count !== 1) accessibilityProblems.push(relative + ": expected one primary h1, found " + h1Count);
+  for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
+    if (!/\balt="/i.test(image[0])) accessibilityProblems.push(relative + ": image without alt text");
+  }
+  for (const frame of html.matchAll(/<iframe\b[^>]*>/gi)) {
+    if (!/\btitle="/i.test(frame[0])) accessibilityProblems.push(relative + ": iframe without title");
+  }
+  for (const anchor of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/gi)) {
+    if (!/\brel="[^"]*noopener/i.test(anchor[0])) accessibilityProblems.push(relative + ": external new-tab link missing noopener");
+  }
 
   for (const match of html.matchAll(/\bhref="([^"]+)"/g)) {
     const href = match[1];
@@ -73,6 +89,7 @@ const errors = [
   ...missingRoutes.map((item) => "Missing output: " + item),
   ...brokenLinks.map((item) => "Broken internal link: " + item),
   ...metadataProblems,
+  ...accessibilityProblems,
   ...placeholderPages.map((item) => "Unfinished placeholder content: " + item)
 ];
 
@@ -82,5 +99,5 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log("Ridwanah build audit passed.");
-  console.log(`Checked ${requiredRoutes.length} routes, ${htmlFiles.length} HTML pages, internal links and page metadata.`);
+  console.log(`Checked ${requiredRoutes.length} routes, ${htmlFiles.length} HTML pages, internal links, metadata and accessibility basics.`);
 }
