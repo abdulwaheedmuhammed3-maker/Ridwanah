@@ -312,3 +312,21 @@ test("health news search and region filters compose and clear restores the libra
   await expect(visibleCards).toHaveCount(5);
   await expect(resultCount).toContainText("Showing 5 updates");
 });
+
+test("health library and news search fields show a visible focus indicator", async ({ page }) => {
+  await page.goto("/health/");
+  const librarySearch = page.getByRole("searchbox", { name: "Search health articles" });
+  const libraryWrap = page.locator(".library-search-wrap");
+  await librarySearch.focus();
+  await expect(libraryWrap).toHaveCSS("outline-width", "3px");
+  await expect(libraryWrap).toHaveCSS("outline-style", "solid");
+  await expect(libraryWrap).toHaveCSS("outline-offset", "3px");
+
+  await page.goto("/news/");
+  const newsSearch = page.getByRole("searchbox", { name: "Search health news" });
+  const newsWrap = page.locator(".news-search-wrap");
+  await newsSearch.focus();
+  await expect(newsWrap).toHaveCSS("outline-width", "3px");
+  await expect(newsWrap).toHaveCSS("outline-style", "solid");
+  await expect(newsWrap).toHaveCSS("outline-offset", "3px");
+});
