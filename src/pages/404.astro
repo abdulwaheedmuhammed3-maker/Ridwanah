@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Page not found — Ridwanah" description="The page you were looking for could not be found.">
+  <main class="not-found-page">
+    <a class="not-found-brand" href="/"><img src="/brand/ridwanah-logo.svg" alt="Ridwanah home" /></a>
+    <div class="not-found-card">
+      <span class="not-found-code">404</span>
+      <div class="eyebrow"><span class="eyebrow-line"></span> PAGE NOT FOUND</div>
+      <h1>This page seems<br /><em>to have moved.</em></h1>
+      <p>The address may be incorrect, or the page may no longer be available. You can return to Ridwanah or explore the health library.</p>
+      <div class="not-found-actions"><a class="button button-primary" href="/">Back to homepage <span aria-hidden="true">↗</span></a><a class="not-found-link" href="/health">Open health library <span aria-hidden="true">→</span></a></div>
+    </div>
+    <p class="not-found-foot">© {new Date().getFullYear()} Ridwanah · Health education with people at heart.</p>
+  </main>
+  <style>
+    .not-found-page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 35px 20px; background: var(--paper); }
+    .not-found-brand img { width: 190px; height: auto; margin-bottom: 27px; }
+    .not-found-card { position: relative; width: min(100%, 680px); padding: 44px; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: linear-gradient(120deg, #fff, #f0faf5); }
+    .not-found-code { position: absolute; top: 18px; right: 24px; color: #dcece6; font-family: var(--font-display); font-size: 66px; font-weight: 900; letter-spacing: -.08em; }
+    .not-found-card h1 { position: relative; margin: 15px 0 10px; color: var(--teal-950); font-family: var(--font-display); font-size: clamp(38px, 7vw, 60px); line-height: 1.02; letter-spacing: -.06em; }
+    .not-found-card h1 em { color: var(--teal-700); font-style: normal; }
+    .not-found-card > p { max-width: 490px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .not-found-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 17px; margin-top: 23px; }
+    .not-found-link { color: var(--teal-800); font-size: 10px; font-weight: 800; }
+    .not-found-foot { margin-top: 23px; color: #91a49d; font-size: 9px; text-align: center; }
+    @media (max-width: 560px) { .not-found-card { padding: 28px 22px; } .not-found-brand img { width: 155px; } .not-found-card > p { font-size: 10px; } }
+  </style>
+</BaseLayout>
