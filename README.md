@@ -80,3 +80,20 @@ Ridwanah is an educational resource, not a substitute for a qualified healthcare
 - Warm white: `#fbfdfc`
 
 The official project name is **Ridwanah**.
+
+
+## Health news
+
+Curated news summaries are stored in `src/data/news.ts` and rendered at:
+- `/news` — searchable, region-filtered health news archive
+- The homepage — three latest summaries with links to original reports
+
+To add a news item:
+- Use a unique slug, a concise title and an original plain-language summary.
+- Prefer primary public-health sources such as Nigeria's Federal Ministry of Health, NCDC, Africa CDC and WHO.
+- Record the original source's publication date, source organisation, source type, exact headline and direct URL.
+- If the event date differs from the publication date, record it separately as `contextDate`; never silently substitute one date for the other.
+- Keep summaries within the scope of the source. Attribute estimates, announcements and targets to the organisation that published them.
+- Avoid turning outbreak figures into live alerts. State the date of the report and recheck fast-changing information before featuring it.
+- Link to the original report. Do not copy full articles, imply independent reporting, or present a news summary as personal medical advice.
+- Manually recheck source links and facts before adding or refreshing stories. The current implementation is a curated static archive, not an automatically updating feed.
