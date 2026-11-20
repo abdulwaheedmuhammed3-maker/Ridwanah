@@ -330,3 +330,33 @@ test("health library and news search fields show a visible focus indicator", asy
   await expect(newsWrap).toHaveCSS("outline-style", "solid");
   await expect(newsWrap).toHaveCSS("outline-offset", "3px");
 });
+
+test("current page is identified semantically in primary navigation", async ({ page }, testInfo) => {
+  const cases = [
+    { route: "/health/", desktop: "/health", mobile: "/health" },
+    { route: "/news/", desktop: "/news", mobile: "/news" },
+    { route: "/watch/", desktop: "/watch", mobile: "/watch" },
+    { route: "/about/", desktop: "/about", mobile: "/about" },
+    { route: "/prevention/", desktop: "/prevention" },
+    { route: "/awareness/", desktop: "/awareness" },
+    { route: "/editorial-policy/", desktop: "/editorial-policy" }
+  ];
+
+  for (const item of cases) {
+    await page.goto(item.route);
+    const desktopCurrent = page.locator(`.sidebar-nav a[href="${item.desktop}"]`);
+    await expect(desktopCurrent).toHaveAttribute("aria-current", "page");
+    await expect(desktopCurrent).toHaveClass(/active/);
+
+    if (item.mobile && testInfo.project.name !== "desktop-chromium") {
+      const mobileCurrent = page.locator(`.mobile-bottom-nav a[href="${item.mobile}"]`);
+      await expect(mobileCurrent).toHaveAttribute("aria-current", "page");
+      await expect(mobileCurrent).toHaveClass(/selected/);
+    } else if (item.mobile) {
+      // The mobile navigation remains in the DOM at desktop sizes; verify its page semantics too.
+      const mobileCurrent = page.locator(`.mobile-bottom-nav a[href="${item.mobile}"]`);
+      await expect(mobileCurrent).toHaveAttribute("aria-current", "page");
+      await expect(mobileCurrent).toHaveClass(/selected/);
+    }
+  }
+});
