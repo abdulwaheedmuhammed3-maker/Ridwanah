@@ -1,4 +1,4 @@
-name: Deploy Ridwanah to Cloudflare
+name: Deploy Ridwanah preview to Cloudflare
 
 on:
   workflow_dispatch:
