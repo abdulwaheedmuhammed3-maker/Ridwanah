@@ -15,7 +15,7 @@ export interface HealthArticle {
   slug: string;
   title: string;
   description: string;
-  category: "Prevention" | "Movement" | "Nutrition";
+  category: "Prevention" | "Movement" | "Nutrition" | "Wellbeing";
   categoryLabel: string;
   readTime: string;
   publishedAt: string;
@@ -230,6 +230,79 @@ export const articles: HealthArticle[] = [
         organisation: "World Health Organization",
         url: "https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
         sourceDate: "WHO fact sheet, accessed 20 November 2026"
+      }
+    ]
+  }
+  {
+    slug: "menstrual-health-understanding-your-cycle",
+    title: "Menstrual health: understanding your cycle with confidence",
+    description: "A respectful introduction to menstruation, menstrual hygiene, common experiences and when it may be helpful to speak with a healthcare professional.",
+    category: "Wellbeing",
+    categoryLabel: "Menstrual health",
+    readTime: "6 min read",
+    publishedAt: "20 November 2026",
+    medicalReview: "Pending qualified medical review",
+    takeaways: [
+      "Menstruation is a natural bodily process, but experiences differ and people deserve accurate information and support.",
+      "The menstrual cycle is regulated by hormones and varies between people; a single cycle length should not be treated as a rule for everyone.",
+      "Very painful, heavy, unpredictable or infrequent bleeding, or symptoms that disrupt everyday life, are valid reasons to seek healthcare advice."
+    ],
+    sections: [
+      {
+        heading: "What is menstrual health?",
+        paragraphs: [
+          "Menstruation is a natural bodily process in which blood and tissue from the lining of the uterus leave the body through the vagina. People can experience menstruation differently: for some it is uncomplicated, while others experience pain, heavy bleeding, stigma or barriers to menstrual products and facilities.",
+          "The World Health Organization describes menstrual health as more than managing bleeding. It includes access to accurate information, appropriate and affordable materials, safe water and sanitation, healthcare when needed, and the ability to participate in everyday life without stigma."
+        ]
+      },
+      {
+        heading: "Understanding the menstrual cycle",
+        paragraphs: [
+          "The menstrual cycle is regulated by hormones. During the first part of the cycle, the lining of the uterus thickens. An ovary usually releases an egg around the middle of the cycle. If pregnancy does not occur, the uterine lining is shed as menstrual blood.",
+          "WHO describes an average cycle length of around 21 to 35 days. Individual patterns vary, and a cycle does not have to match a 28-day calendar to be considered normal. Keeping a simple record of bleeding dates and symptoms can help someone describe changes to a healthcare professional."
+        ]
+      },
+      {
+        heading: "Menstrual products and hygiene",
+        paragraphs: [
+          "People may use different menstrual materials, including disposable pads, reusable pads or cloths, tampons, menstrual cups or period underwear. The most suitable option depends on personal preference, access, cost, comfort and local facilities.",
+          "Materials should be used, changed, cleaned, dried or disposed of according to the product instructions and practical access to safe water, privacy and sanitation. Reusable materials need to be washed and fully dried before they are used again. No one should be shamed for the products available to them."
+        ]
+      },
+      {
+        heading: "Pain and other symptoms",
+        paragraphs: [
+          "Some people experience cramps, bloating, headaches or mood changes around menstruation. Experiences vary and symptoms should be taken seriously when they affect daily life.",
+          "Very painful periods, heavy bleeding, unpredictable or infrequent bleeding, or mood symptoms that are upsetting or disruptive may need assessment by a qualified healthcare professional. These symptoms can have different causes, and an online article cannot determine what is happening for an individual."
+        ]
+      },
+      {
+        heading: "Menstruation should not be surrounded by shame",
+        paragraphs: [
+          "Accurate, age-appropriate information before a first period can help young people feel prepared and know where to ask questions. Menstruation is not dirty and should not be a reason to exclude someone from school, work, sport or community life.",
+          "Families, schools and communities can support menstrual health by discussing the subject respectfully, challenging myths and making sure people can access private facilities, water and suitable menstrual materials."
+        ]
+      },
+      {
+        heading: "When should someone seek healthcare advice?",
+        paragraphs: [
+          "A person should consider speaking with a qualified healthcare professional if bleeding is very heavy, periods are repeatedly very painful, cycles become unpredictable or infrequent, menstruation stops unexpectedly, or symptoms interfere with normal activities or wellbeing.",
+          "There is no need to feel embarrassed about asking for help. A healthcare professional can listen, assess the person's circumstances and explain whether further evaluation or care is needed."
+        ]
+      }
+    ],
+    sources: [
+      {
+        title: "Menstrual health",
+        organisation: "World Health Organization",
+        url: "https://www.who.int/news-room/fact-sheets/detail/menstrual-health",
+        sourceDate: "18 June 2026"
+      },
+      {
+        title: "Guidance on Menstrual Health and Hygiene",
+        organisation: "UNICEF",
+        url: "https://www.unicef.org/media/91341/file/UNICEF-Guidance-menstrual-health-hygiene-2019.pdf",
+        sourceDate: "2019"
       }
     ]
   }
