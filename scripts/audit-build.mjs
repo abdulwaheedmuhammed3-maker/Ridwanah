@@ -39,6 +39,8 @@ if (!await exists(path.join(dist, "404.html"))) missingRoutes.push("special 404 
 if (!await exists(path.join(dist, "robots.txt"))) missingRoutes.push("robots.txt");
 
 const htmlFiles = await collectHtml(dist);
+const htmlContentByPath = new Map();
+for (const filePath of htmlFiles) htmlContentByPath.set(filePath, await readFile(filePath, "utf8"));
 const brokenLinks = [];
 const metadataProblems = [];
 const placeholderPages = [];
@@ -47,7 +49,7 @@ let pendingReviewArticleCount = 0;
 const metadataValues = { titles: new Map(), descriptions: new Map() };
 
 for (const htmlFile of htmlFiles) {
-  const html = await readFile(htmlFile, "utf8");
+  const html = htmlContentByPath.get(htmlFile) ?? "";
   const relative = path.relative(dist, htmlFile);
   const normalizedRelative = relative.split(path.sep).join("/");
 
@@ -99,16 +101,29 @@ for (const htmlFile of htmlFiles) {
   for (const match of html.matchAll(/\bhref="([^"]+)"/g)) {
     const href = match[1];
     if (!href.startsWith("/") || href.startsWith("//")) continue;
-    let pathname;
-    try { pathname = new URL(href, "https://ridwanah.invalid").pathname; }
+    let parsed;
+    try { parsed = new URL(href, "https://ridwanah.invalid"); }
     catch { continue; }
-    if (!pathname || pathname === "/") {
-      if (!await exists(path.join(dist, "index.html"))) brokenLinks.push(relative + " -> " + href);
+    const pathname = parsed.pathname;
+    let resolved;
+    if (!pathname || pathname === "/") resolved = path.join(dist, "index.html");
+    else {
+      const direct = path.join(dist, pathname.replace(/^\//, ""));
+      resolved = /\.[a-z0-9]{2,6}$/i.test(pathname) ? direct : path.join(direct, "index.html");
+    }
+    if (!await exists(resolved)) {
+      brokenLinks.push(relative + " -> " + href);
       continue;
     }
-    const direct = path.join(dist, pathname.replace(/^\//, ""));
-    const resolved = /\.[a-z0-9]{2,6}$/i.test(pathname) ? direct : path.join(direct, "index.html");
-    if (!await exists(resolved)) brokenLinks.push(relative + " -> " + href);
+    if (parsed.hash) {
+      const targetHtml = htmlContentByPath.get(resolved) ?? await readFile(resolved, "utf8");
+      const identifiers = new Set([...targetHtml.matchAll(/\bid="([^"]+)"/gi)].map((item) => item[1]));
+      for (const namedAnchor of targetHtml.matchAll(/<a\b[^>]*\bname="([^"]+)"/gi)) identifiers.add(namedAnchor[1]);
+      let fragment;
+      try { fragment = decodeURIComponent(parsed.hash.slice(1)); }
+      catch { fragment = parsed.hash.slice(1); }
+      if (fragment && !identifiers.has(fragment)) brokenLinks.push(relative + " -> " + href + " (missing fragment target: " + fragment + ")");
+    }
   }
 }
 
