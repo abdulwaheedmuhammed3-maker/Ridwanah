@@ -1,0 +1,138 @@
+---
+import LibraryLayout from "../../layouts/LibraryLayout.astro";
+import { healthNews } from "../../data/news";
+import "../../styles/news.css";
+
+const regions = ["All updates", "Nigeria", "Africa", "Global"];
+---
+
+<LibraryLayout activeSection="news" title="Health News — Ridwanah" description="Understand selected public-health updates from Nigeria, Africa and around the world, with links to the original sources.">
+  <div id="top" class="news-page">
+    <div class="library-breadcrumb"><a href="/">Home</a><span>/</span><span>Health news</span></div>
+
+    <section class="news-hero">
+      <div class="news-hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> THE BIGGER HEALTH PICTURE</div>
+        <h1>Public health,<br /><em>in perspective.</em></h1>
+        <p>Follow selected health developments from Nigeria, across Africa and around the world. Every brief links back to the organisation that published the original report.</p>
+        <div class="news-hero-meta"><span>✓ Source-linked summaries</span><span>◎ Publication dates shown</span></div>
+      </div>
+      <div class="news-hero-aside">
+        <span class="news-hero-icon">◉</span>
+        <strong>Read beyond the headline.</strong>
+        <small>Understand what was announced, who said it and where to find the original information.</small>
+      </div>
+    </section>
+
+    <section class="news-controls" aria-label="Search and filter health news">
+      <div class="news-controls-heading">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> RECENT UPDATES</div><h2>News worth understanding.</h2></div>
+        <span class="news-count-label">{healthNews.length} sourced updates</span>
+      </div>
+      <div class="news-search-wrap">
+        <span aria-hidden="true">⌕</span>
+        <label class="visually-hidden" for="news-search">Search health news</label>
+        <input id="news-search" type="search" placeholder="Search a topic, country or organisation..." autocomplete="off" />
+      </div>
+      <div class="news-filters" aria-label="Filter health news by region">
+        {regions.map((region, index) => (
+          <button class:list={["news-filter", index === 0 && "is-active"]} type="button" data-news-filter={index === 0 ? "all" : region.toLowerCase()} aria-pressed={index === 0 ? "true" : "false"}>{region}</button>
+        ))}
+      </div>
+      <p class="news-results-count" id="news-results-count" aria-live="polite">Showing {healthNews.length} updates</p>
+    </section>
+
+    <section class="news-grid" id="news-grid" aria-label="Health news updates">
+      {healthNews.map((item, index) => (
+        <article class:list={["news-card", index === 0 && "news-card-featured"]} data-news-card data-region={item.region.toLowerCase()} data-search={`${item.title} ${item.summary} ${item.region} ${item.topic} ${item.sourceName}`.toLowerCase()}>
+          <div class:list={["news-card-art", item.region.toLowerCase()]}>
+            <span class="news-card-region">{item.region}</span>
+            <span class="news-card-art-symbol" aria-hidden="true">{item.region === "Nigeria" ? "✳" : item.region === "Africa" ? "◎" : "◌"}</span>
+            <span class="news-card-art-index">0{index + 1}</span>
+          </div>
+          <div class="news-card-content">
+            <div class="news-card-meta"><span>{item.topic}</span><time>{item.sourceDate}</time></div>
+            <h2>{item.title}</h2>
+            <p>{item.summary}</p>
+            {item.contextDate && <p class="news-context-date">{item.contextDate}</p>}
+            <div class="news-source">
+              <div><strong>{item.sourceName}</strong><small>{item.sourceType} · Source published {item.sourceDate}</small></div>
+              <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Read original source: ${item.sourceTitle}`}>Original report <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <div class="news-empty" id="news-empty" hidden>
+      <span>⌕</span><strong>No matching updates</strong><p>Try another search term or choose a different region.</p>
+      <button id="clear-news-filters" type="button">Clear search and filters</button>
+    </div>
+
+    <section class="news-editorial-note">
+      <div class="news-note-icon">i</div>
+      <div>
+        <strong>How Ridwanah handles health news</strong>
+        <p>These are concise editorial summaries of the linked organisations’ announcements and reports, not independent investigations or medical advice. Publication dates refer to the original source. Where an event happened on a different date, that date is labelled separately. Outbreak figures and evolving situations may change after a report is published.</p>
+      </div>
+    </section>
+
+    <section class="news-source-guide">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> CHECK THE ORIGINAL INFORMATION</div><h2>Follow trusted public-health sources.</h2><p>Ridwanah will prioritise primary public-health organisations and clearly identify the source behind every news brief.</p></div>
+      <div class="news-source-links">
+        <a href="https://health.gov.ng/" target="_blank" rel="noopener noreferrer">Nigeria Federal Ministry of Health <span>↗</span></a>
+        <a href="https://ncdc.gov.ng/" target="_blank" rel="noopener noreferrer">Nigeria Centre for Disease Control <span>↗</span></a>
+        <a href="https://africacdc.org/news/" target="_blank" rel="noopener noreferrer">Africa CDC <span>↗</span></a>
+        <a href="https://www.who.int/news" target="_blank" rel="noopener noreferrer">World Health Organization <span>↗</span></a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const searchInput = document.querySelector<HTMLInputElement>("#news-search");
+    const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-news-filter]"));
+    const newsCards = Array.from(document.querySelectorAll<HTMLElement>("[data-news-card]"));
+    const resultCount = document.querySelector<HTMLElement>("#news-results-count");
+    const emptyState = document.querySelector<HTMLElement>("#news-empty");
+    const clearButton = document.querySelector<HTMLButtonElement>("#clear-news-filters");
+    let activeRegion = "all";
+
+    function updateNews() {
+      const searchTerm = (searchInput?.value ?? "").trim().toLowerCase();
+      let visibleCount = 0;
+      newsCards.forEach((card) => {
+        const regionMatches = activeRegion === "all" || card.dataset.region === activeRegion;
+        const textMatches = (card.dataset.search ?? "").includes(searchTerm);
+        const visible = regionMatches && textMatches;
+        card.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+      if (resultCount) resultCount.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? "update" : "updates"}`;
+      if (emptyState) emptyState.hidden = visibleCount !== 0;
+    }
+
+    searchInput?.addEventListener("input", updateNews);
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeRegion = button.dataset.newsFilter ?? "all";
+        filterButtons.forEach((item) => {
+          const selected = item === button;
+          item.classList.toggle("is-active", selected);
+          item.setAttribute("aria-pressed", String(selected));
+        });
+        updateNews();
+      });
+    });
+    clearButton?.addEventListener("click", () => {
+      if (searchInput) searchInput.value = "";
+      activeRegion = "all";
+      filterButtons.forEach((item) => {
+        const selected = item.dataset.newsFilter === "all";
+        item.classList.toggle("is-active", selected);
+        item.setAttribute("aria-pressed", String(selected));
+      });
+      updateNews();
+      searchInput?.focus();
+    });
+  </script>
+</LibraryLayout>
