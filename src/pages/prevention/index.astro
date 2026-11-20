@@ -1,0 +1,51 @@
+---
+import LibraryLayout from "../../layouts/LibraryLayout.astro";
+import { articles } from "../../data/articles";
+import "../../styles/section-pages.css";
+
+const guides = articles;
+const habits = [
+  { number: "01", title: "Keep hands clean", text: "Make handwashing part of routines around food, toilet use and caring for someone who is ill.", href: "/health/handwashing-when-and-how", label: "Read the handwashing guide", tone: "mint" },
+  { number: "02", title: "Build movement into your week", text: "Walking, cycling, active travel, dancing and other movement can contribute to physical activity.", href: "/health/physical-activity-for-adults", label: "Explore movement guidance", tone: "blue" },
+  { number: "03", title: "Choose variety over shortcuts", text: "A varied eating pattern can include vegetables, fruit, pulses, whole grains and suitable protein foods.", href: "/health/healthy-eating-everyday-basics", label: "Read the nutrition guide", tone: "coral" },
+  { number: "04", title: "Stay informed about vaccination", text: "Use official immunisation information and discuss age- or condition-specific questions with a qualified health worker.", href: "https://www.who.int/health-topics/vaccines-and-immunization", label: "WHO immunisation information", tone: "mint" },
+  { number: "05", title: "Pay attention to your environment", text: "Air, water, sanitation, housing and exposure to harmful substances can affect health. Learn from public-health sources about risks in your area.", href: "https://www.who.int/health-topics/lead-poisoning", label: "WHO environmental-health resource", tone: "blue" },
+  { number: "06", title: "Ask for professional advice when needed", text: "General information cannot assess your personal circumstances. A qualified professional can help you make decisions about your own health.", href: "/disclaimer", label: "Read the health information disclaimer", tone: "coral" }
+];
+---
+<LibraryLayout activeSection="prevention" title="Prevention & Healthy Living — Ridwanah" description="Explore practical, evidence-informed starting points for everyday prevention and healthy living.">
+  <div id="top" class="resource-page">
+    <div class="library-breadcrumb"><a href="/">Home</a><span>/</span><span>Prevention & healthy living</span></div>
+    <section class="resource-hero">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> PRACTICAL KNOWLEDGE FOR EVERYDAY LIFE</div>
+        <h1>Prevention starts<br /><em>with what we know.</em></h1>
+        <p>Explore general health information that can help make everyday prevention easier to understand. Start small, use reliable sources and seek individual advice when you need it.</p>
+      </div>
+      <div class="resource-hero-stamp"><span>＋</span><strong>Learn · Practise · Review</strong><small>Education, not a personal health plan</small></div>
+    </section>
+
+    <section class="resource-toolbar">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> EVERYDAY STARTING POINTS</div><h2>Six areas worth understanding.</h2></div>
+    </section>
+    <section class="habit-grid" aria-label="Prevention and healthy living topics">
+      {habits.map((habit) => (
+        <article class="habit-card">
+          <div class="habit-card-top"><span class:list={["habit-number", habit.tone]}>{habit.number}</span><span aria-hidden="true">↗</span></div>
+          <h2>{habit.title}</h2>
+          <p>{habit.text}</p>
+          <a href={habit.href} target={habit.href.startsWith("http") ? "_blank" : undefined} rel={habit.href.startsWith("http") ? "noopener noreferrer" : undefined}>{habit.label} <span aria-hidden="true">↗</span></a>
+        </article>
+      ))}
+    </section>
+
+    <section class="resource-callout">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> LEARN IN MORE DETAIL</div><h2>Read the Ridwanah health guides.</h2><p>These guides explain selected topics in plain language and include the original references used to prepare them. They are still awaiting qualified medical review.</p></div>
+      <div class="resource-link-list">
+        {guides.map((guide) => <a href={`/health/${guide.slug}`}>{guide.title} <span>↗</span></a>)}
+        <a href="/health">Browse all health guides <span>↗</span></a>
+      </div>
+    </section>
+    <p class="resource-disclaimer">Health needs differ between people. This page is general education, not a diagnosis, screening schedule, treatment recommendation or personalised prevention plan.</p>
+  </div>
+</LibraryLayout>
