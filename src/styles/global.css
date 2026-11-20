@@ -183,6 +183,24 @@ button { font: inherit; }
   .sidebar { display: none; }
   .main-column { margin-left: 0; }
   .topbar { height: 66px; padding-inline: 24px; }
+  .dashboard-content { width: min(100%, 900px); padding: 24px 24px 110px; }
+  .mobile-bottom-nav {
+    position: fixed;
+    z-index: 30;
+    inset: auto 0 0;
+    height: calc(65px + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 6px 7px env(safe-area-inset-bottom);
+    border-top: 1px solid var(--line);
+    background: #ffffffed;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 -8px 24px #164d3e0a;
+  }
+
+  .main-column { margin-left: 0; }
+  .topbar { height: 66px; padding-inline: 24px; }
   .dashboard-content { width: min(100%, 900px); padding: 24px; }
   .welcome-panel { grid-template-columns: 1fr .8fr; padding: 26px; }
   .welcome-copy h1 { font-size: 47px; }
