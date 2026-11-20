@@ -1,0 +1,54 @@
+---
+import LibraryLayout from "../../layouts/LibraryLayout.astro";
+import "../../styles/section-pages.css";
+
+const campaigns = [
+  { number: "01", title: "World AMR Awareness Week", date: "18–24 November each year", focus: "Antimicrobial resistance and the shared responsibility of people, health workers, animal-health professionals and environmental sectors.", theme: "2026 theme: One Health, one action: Prevent AMR now", href: "https://www.who.int/campaigns/world-amr-awareness-week/2026" },
+  { number: "02", title: "World AIDS Day", date: "1 December each year", focus: "Awareness, solidarity and progress in HIV prevention, treatment and care.", theme: "Explore WHO campaign information and annual materials", href: "https://www.who.int/campaigns/world-aids-day/2026" },
+  { number: "03", title: "World Health Day", date: "7 April each year", focus: "An annual opportunity to draw attention to a health topic of global concern.", theme: "Explore the 2026 campaign: Together for health. Stand with science.", href: "https://www.who.int/campaigns/world-health-day/2026" },
+  { number: "04", title: "World Immunization Week", date: "24–30 April each year", focus: "Highlighting the value of vaccines and the collective work needed to protect people of all ages.", theme: "Explore the 2026 campaign: For every generation, vaccines work", href: "https://www.who.int/campaigns/world-immunization-week/2026" },
+  { number: "05", title: "World Hand Hygiene Day", date: "5 May each year", focus: "Promoting hand hygiene and infection prevention in health care and community settings.", theme: "Browse WHO hand-hygiene resources and materials", href: "https://www.who.int/teams/integrated-health-services/infection-prevention-control/ipc-training-resources" }
+];
+---
+<LibraryLayout activeSection="awareness" title="Health Awareness — Ridwanah" description="Explore public-health campaigns and awareness observances from trusted organisations.">
+  <div id="top" class="resource-page">
+    <div class="library-breadcrumb"><a href="/">Home</a><span>/</span><span>Health awareness</span></div>
+    <section class="resource-hero">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> UNDERSTAND THE ISSUES THAT AFFECT COMMUNITIES</div>
+        <h1>Awareness that<br /><em>leads to understanding.</em></h1>
+        <p>Public-health campaigns can make important issues easier to discuss and help communities find reliable information. Explore selected annual observances and their official campaign resources.</p>
+      </div>
+      <div class="resource-hero-stamp"><span>◎</span><strong>Learn before you share</strong><small>Official materials · Clear context</small></div>
+    </section>
+
+    <section class="resource-toolbar">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> PUBLIC-HEALTH CAMPAIGNS</div><h2>Mark the dates. Understand the message.</h2></div>
+      <a class="resource-toolbar-link" href="https://www.who.int/campaigns" target="_blank" rel="noopener noreferrer">WHO global health days <span>↗</span></a>
+    </section>
+    <section class="campaign-list" aria-label="Selected health awareness campaigns">
+      {campaigns.map((campaign) => (
+        <article class="campaign-card">
+          <div class="campaign-index">{campaign.number}</div>
+          <div class="campaign-copy">
+            <div class="campaign-date">{campaign.date}</div>
+            <h2>{campaign.title}</h2>
+            <p>{campaign.focus}</p>
+            <small>{campaign.theme}</small>
+          </div>
+          <a href={campaign.href} target="_blank" rel="noopener noreferrer">Official campaign <span aria-hidden="true">↗</span></a>
+        </article>
+      ))}
+    </section>
+
+    <section class="resource-callout">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> NIGERIA & AFRICA</div><h2>Follow public-health information close to home.</h2><p>National and regional agencies publish updates, campaign materials and guidance for local contexts. Check the original source and date before sharing health information.</p></div>
+      <div class="resource-link-list">
+        <a href="https://ncdc.gov.ng/" target="_blank" rel="noopener noreferrer">Nigeria Centre for Disease Control <span>↗</span></a>
+        <a href="https://health.gov.ng/" target="_blank" rel="noopener noreferrer">Federal Ministry of Health and Social Welfare <span>↗</span></a>
+        <a href="https://africacdc.org/" target="_blank" rel="noopener noreferrer">Africa CDC <span>↗</span></a>
+      </div>
+    </section>
+    <p class="resource-disclaimer">Campaign dates and themes may change. Ridwanah is not an official campaign partner unless a partnership is explicitly stated and verified. Follow each organisation’s current page for the latest materials.</p>
+  </div>
+</LibraryLayout>
