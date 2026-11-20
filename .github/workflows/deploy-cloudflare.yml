@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: "Confirm deployment to the public Ridwanah workers.dev URL"
+        description: "Confirm deployment to the public Ridwanah preview workers.dev URL"
         required: true
         type: boolean
         default: false
