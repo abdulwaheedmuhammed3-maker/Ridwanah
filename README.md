@@ -1,47 +1,62 @@
 # Ridwanah
 
-**Your Health. Your Knowledge. Your Wellbeing.**
+**Learn • Prevent • Live Healthier**
 
 Ridwanah is a digital health education platform designed to make reliable health information easier to understand and use in everyday life.
 
-## Project status
+## Current build
 
-The project is being built as a responsive, mobile-first website. The first release focuses on educational articles, health awareness, prevention guidance, and short educational videos.
-
-## Principles
-
-- Evidence-informed, plain-language health education.
-- Clear references, publication dates, and review information.
-- Respectful, inclusive, accessible content.
-- No diagnosis or personalised treatment through the website.
-- Privacy-first design, especially around sensitive health information.
-
-## Planned technology
-
+The repository contains the first responsive website foundation:
 - Astro + TypeScript
-- Lightweight, responsive CSS
-- Static content for the initial release
-- GitHub for source control
-- Cloudflare Pages for deployment
+- Mobile-first homepage and navigation
+- Ridwanah SVG wordmark, brand mark, and favicon
+- Brand colour tokens and responsive styles
+- Health education disclaimer and content principles
 
-## Local development
+## Run locally
 
-The starter app will be added in the next project setup commit. Once present:
+Requirements: Node.js 20.3.0 or later.
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Medical content notice
+Open the local address printed by Astro. To create a production build:
 
-Ridwanah is an educational resource, not a substitute for a qualified healthcare professional. Health content should be checked against reputable sources and reviewed by an appropriately qualified professional before publication.
+```bash
+npm run check
+npm run build
+npm run preview
+```
+
+## Deploy
+
+The site is a static Astro project and can be deployed to Cloudflare Pages or another static host.
+
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Install command: `npm install`
+
+Set the production domain only after the project owner has selected and configured it.
+
+## Editorial and safety principles
+
+- Use reputable, traceable sources for health information.
+- Write in plain language and distinguish established facts from uncertainty.
+- Show publication and review dates, source references, and reviewer credentials on health articles.
+- Have medical content reviewed by an appropriately qualified healthcare professional before publication.
+- Do not offer diagnosis, personalised treatment, or emergency triage.
+- Collect as little personal information as possible, especially sensitive health information.
+
+Ridwanah is an educational resource, not a substitute for a qualified healthcare professional.
 
 ## Brand
 
-- Primary: deep teal
-- Secondary: mint
-- Accent: coral
-- Background: warm white
+- Deep teal: `#075e59`
+- Dark teal: `#073f42`
+- Mint: `#a8e5d7`
+- Coral: `#ff806b`
+- Warm white: `#fbfdfc`
 
 The official project name is **Ridwanah**.
