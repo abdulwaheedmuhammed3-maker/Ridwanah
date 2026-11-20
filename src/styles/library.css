@@ -209,3 +209,8 @@
   .article-aside-card { grid-row: auto; }
   .article-aside-link { grid-column: 1; }
 }
+
+.article-card-art.wellbeing { background: linear-gradient(135deg, #f1effb, #faf9ff); }
+.article-card-art.wellbeing::before, .article-card-art.wellbeing::after { border-color: #d5cdec; }
+.wellbeing .article-art-label { color: #8270aa; }
+.wellbeing .article-art-symbol { background: #8371ad; box-shadow: 0 12px 28px #8371ad25; }
