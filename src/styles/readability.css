@@ -1,0 +1,128 @@
+/* Readability and keyboard-access improvements */
+:where(
+  .welcome-copy > p,
+  .section-intro,
+  .topic-card > p,
+  .area-card > p,
+  .awareness-copy > p,
+  .watch-content > p,
+  .about-copy > p,
+  .disclaimer-panel p,
+  .home-guides-heading p,
+  .home-guide-body > p,
+  .home-guides-note,
+  .home-news-heading p,
+  .home-news-card p,
+  .home-news-note,
+  .library-hero-copy > p,
+  .library-card-body > p,
+  .library-editorial-note p,
+  .article-deck,
+  .article-keypoints ul,
+  .article-section p,
+  .article-section ul,
+  .article-sources > p,
+  .article-disclaimer p,
+  .news-hero-copy > p,
+  .news-hero-aside small,
+  .news-card-content > p,
+  .news-editorial-note p,
+  .news-source-guide p,
+  .video-card-content > p,
+  .habit-card p,
+  .campaign-copy p,
+  .resource-hero > div:first-child > p,
+  .resource-callout p,
+  .resource-disclaimer,
+  .policy-hero > p,
+  .policy-content p,
+  .policy-content li
+) {
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+:where(
+  .filter-chip,
+  .news-filter,
+  .resource-filter,
+  .library-empty button,
+  .news-empty button,
+  .resource-empty button,
+  .clear-news-filters
+) {
+  min-height: 42px;
+  padding-inline: 14px;
+  font-size: 12px;
+  touch-action: manipulation;
+}
+
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}
+
+.mobile-nav-item small { font-size: 10px; }
+
+@media (max-width: 680px) {
+  :where(
+    .welcome-copy > p,
+    .section-intro,
+    .topic-card > p,
+    .area-card > p,
+    .awareness-copy > p,
+    .watch-content > p,
+    .about-copy > p,
+    .disclaimer-panel p,
+    .home-guides-heading p,
+    .home-guide-body > p,
+    .home-guides-note,
+    .home-news-heading p,
+    .home-news-card p,
+    .home-news-note,
+    .library-hero-copy > p,
+    .library-card-body > p,
+    .library-editorial-note p,
+    .article-deck,
+    .article-keypoints ul,
+    .article-section p,
+    .article-section ul,
+    .article-sources > p,
+    .article-disclaimer p,
+    .news-hero-copy > p,
+    .news-card-content > p,
+    .news-editorial-note p,
+    .news-source-guide p,
+    .video-card-content > p,
+    .habit-card p,
+    .campaign-copy p,
+    .resource-hero > div:first-child > p,
+    .resource-callout p,
+    .resource-disclaimer,
+    .policy-hero > p,
+    .policy-content p,
+    .policy-content li
+  ) {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .library-card-body > p,
+  .home-guide-body > p,
+  .home-news-card p,
+  .news-card-content > p,
+  .video-card-content > p {
+    font-size: 12px;
+  }
+
+  .review-pending,
+  .home-guide-review,
+  .news-source small,
+  .article-meta-top,
+  .news-card-meta,
+  .video-card-meta {
+    font-size: 10px;
+  }
+
+  .mobile-nav-item small { font-size: 10px; }
+}
