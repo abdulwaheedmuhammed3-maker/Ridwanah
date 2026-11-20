@@ -7,12 +7,14 @@ interface Props {
   title?: string;
   description?: string;
   activeSection?: "health" | "news" | "watch" | "prevention" | "awareness" | "about" | "editorial" | "privacy" | "disclaimer" | "terms";
+  robots?: string;
 }
 
 const {
   title = "Health Library — Ridwanah",
   description = "Explore clear, evidence-informed health education from Ridwanah.",
-  activeSection = "health"
+  activeSection = "health",
+  robots = "index, follow, max-image-preview:large"
 } = Astro.props;
 
 const sectionTitles = {
@@ -29,7 +31,7 @@ const sectionTitles = {
 } as const;
 const sectionTitle = sectionTitles[activeSection];
 ---
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} robots={robots}>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="dashboard-app">
     <aside class="sidebar" aria-label="Main sidebar">

@@ -11,7 +11,7 @@ export function getStaticPaths() {
 
 const { article } = Astro.props;
 ---
-<LibraryLayout title={`${article.title} — Ridwanah`} description={article.description}>
+<LibraryLayout title={`${article.title} — Ridwanah`} description={article.description} robots="noindex, follow">
   <article class="article-page" id="top">
     <div class="library-breadcrumb"><a href="/">Home</a><span>/</span><a href="/health">Health library</a><span>/</span><span>Reading guide</span></div>
 

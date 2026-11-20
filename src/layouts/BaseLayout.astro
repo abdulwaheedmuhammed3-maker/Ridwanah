@@ -5,11 +5,13 @@ import "../styles/readability.css";
 interface Props {
   title?: string;
   description?: string;
+  robots?: string;
 }
 
 const {
   title = "Ridwanah — Digital Health Education",
-  description = "Understand your health with clear, responsible, evidence-informed education."
+  description = "Understand your health with clear, responsible, evidence-informed education.",
+  robots = "index, follow, max-image-preview:large"
 } = Astro.props;
 ---
 <!doctype html>
@@ -19,7 +21,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#fbfdfc" />
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content={robots} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta property="og:site_name" content="Ridwanah" />
     <meta property="og:type" content="website" />
