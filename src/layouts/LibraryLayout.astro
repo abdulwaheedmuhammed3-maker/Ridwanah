@@ -69,8 +69,8 @@ const onNewsPage = activeSection === "news";
 
   <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
     <a class="mobile-nav-item" href="/"><span>⌂</span><small>Home</small></a>
-    <a class="mobile-nav-item selected" href="/health"><span>▤</span><small>Learn</small></a>
-    <a class="mobile-nav-item" href="/#prevention"><span>＋</span><small>Prevent</small></a>
+    <a class:list={["mobile-nav-item", !onNewsPage && "selected"]} href="/health"><span>▤</span><small>Learn</small></a>
+    <a class:list={["mobile-nav-item", onNewsPage && "selected"]} href="/news"><span>◉</span><small>News</small></a>
     <a class="mobile-nav-item" href="/#watch"><span>▷</span><small>Watch</small></a>
     <a class="mobile-nav-item" href="/#about"><span>♡</span><small>About</small></a>
   </nav>
