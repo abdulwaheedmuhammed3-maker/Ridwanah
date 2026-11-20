@@ -30,7 +30,7 @@ const categories = ["All topics", "Prevention", "Movement", "Nutrition"];
       </div>
       <div class="category-filters" aria-label="Filter by topic">
         {categories.map((category, index) => (
-          <button class:list={["filter-chip", index === 0 && "is-active"]} type="button" data-filter={category.toLowerCase()} aria-pressed={index === 0 ? "true" : "false"}>{category}</button>
+          <button class:list={["filter-chip", index === 0 && "is-active"]} type="button" data-filter={index === 0 ? "all" : category.toLowerCase()} aria-pressed={index === 0 ? "true" : "false"}>{category}</button>
         ))}
       </div>
       <div class="library-results-line">
