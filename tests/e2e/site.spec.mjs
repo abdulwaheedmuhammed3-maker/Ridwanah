@@ -189,3 +189,33 @@ test("every curated news brief and video exposes a secure original-source link",
     expect(link.rel).toContain("noopener");
   }
 });
+
+
+test("keyboard users can reveal skip link and reach primary navigation", async ({ page }) => {
+  await page.goto("/");
+  await page.keyboard.press("Tab");
+  const skipLink = page.locator(".skip-link");
+  await expect(skipLink).toBeFocused();
+  await expect(skipLink).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#main-content$/);
+  await expect(page.locator("main")).toBeVisible();
+
+  // Confirm the navigation controls for the active responsive layout remain keyboard-focusable.
+  const desktopNav = page.locator(".sidebar-nav a").first();
+  const mobileNav = page.locator(".mobile-bottom-nav a").first();
+  const firstNavLink = await desktopNav.isVisible() ? desktopNav : mobileNav;
+  await expect(firstNavLink).toBeVisible();
+  await firstNavLink.focus();
+  await expect(firstNavLink).toBeFocused();
+});
+
+test("health library filter controls expose keyboard focus and activate", async ({ page }) => {
+  await page.goto("/health/");
+  const wellbeingFilter = page.getByRole("button", { name: "Wellbeing", exact: true });
+  await wellbeingFilter.focus();
+  await expect(wellbeingFilter).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("[data-article-card]:visible")).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: /Menstrual health:/i })).toBeVisible();
+});
