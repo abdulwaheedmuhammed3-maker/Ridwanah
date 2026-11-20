@@ -2,27 +2,54 @@
 
 **Learn • Prevent • Live Healthier**
 
-Ridwanah is a digital health education platform designed to make reliable health information easier to understand and use in everyday life.
+Ridwanah is a responsive digital health education website. Its purpose is to make reputable public-health information easier to find, understand and use in everyday conversations.
 
-## Current build
+The current build is a static Astro website. It does not include accounts, a medical consultation service, a backend, a database or personal health-data collection.
 
-The repository contains the first responsive website foundation:
+## Current website
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Homepage and entry point |
+| `/health` | Searchable health education library |
+| `/health/handwashing-when-and-how` | Handwashing guide |
+| `/health/physical-activity-for-adults` | Adult physical-activity guide |
+| `/health/healthy-eating-everyday-basics` | Healthy eating guide |
+| `/news` | Curated, source-linked public-health news |
+| `/watch` | Selected educational videos from WHO |
+| `/prevention` | Prevention and healthy-living learning hub |
+| `/awareness` | Public-health campaigns and observances |
+| `/about` | About Ridwanah |
+| `/editorial-policy` | Editorial and medical-review standards |
+| `/privacy` | Privacy notice for the current static site |
+| `/disclaimer` | Health information disclaimer |
+| `/terms` | Website terms of use |
+| `/404` | Not-found page |
+
+## Technology
+
 - Astro + TypeScript
-- Mobile-first homepage and navigation
-- Ridwanah SVG wordmark, brand mark, and favicon
-- Brand colour tokens and responsive styles
-- Health education disclaimer and content principles
+- Static pages and local TypeScript content data
+- Lightweight CSS; no UI framework or runtime database
+- YouTube privacy-enhanced embeds for selected videos
+- GitHub repository and GitHub Actions validation
+
+The website is designed to remain simple to build and host. No production hosting provider is configured in this repository yet.
 
 ## Run locally
 
-Requirements: Node.js 22.23.4 or later, matching the current Astro 7 requirement.
+Requirements: Node.js 22.23.4 or later.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the local address printed by Astro. To create a production build:
+Open the local address printed by Astro.
+
+## Validate and build
+
+Run both checks before committing:
 
 ```bash
 npm run check
@@ -30,46 +57,77 @@ npm run build
 npm run preview
 ```
 
-## Health library
+GitHub Actions runs `npm run check` and `npm run build` on pushes to `main` and on pull requests targeting `main`.
 
-The first three educational drafts are stored in `src/data/articles.ts` and rendered through:
-- `/health` — searchable and filterable article library
-- `/health/handwashing-when-and-how`
-- `/health/physical-activity-for-adults`
-- `/health/healthy-eating-everyday-basics`
+## Content structure
 
-To add an article, create a new entry in the `articles` array with a unique slug, category, summary, reading time, publication date, key points, sections, and source links. The detail route is generated from that data automatically.
+- `src/data/articles.ts` — health education guide data.
+- `src/data/news.ts` — curated source-linked public-health news.
+- `src/data/videos.ts` — selected external learning videos.
+- `src/pages/` — route pages.
+- `src/layouts/` — shared page layouts.
+- `src/styles/` — brand, homepage, library, news and shared content-page styles.
+- `public/brand/` — Ridwanah SVG brand assets.
 
-### Editorial requirements
+### Adding a health guide
 
-- Use primary, reputable public-health sources wherever possible.
-- Keep claims within the scope of the cited source and avoid unsupported treatment advice.
-- Include source title, organisation, date, and direct URL.
-- Keep the visible medical-review status as pending until an appropriately qualified professional has actually reviewed and approved the article.
-- Never invent reviewer names, professional credentials, review dates, or endorsements.
-- Recheck links and guidance before republishing an article after a source is updated.
-- Keep the educational disclaimer visible on individual articles.
+Add an entry to `src/data/articles.ts` with a unique slug, title, description, category, reading time, publication date, medical-review status, takeaways, sections and source references. The article route is generated from this data.
 
-## Deploy
+Editorial requirements:
+- Prefer primary and reputable public-health sources.
+- Keep claims within the scope of cited evidence and do not add unsupported treatment instructions.
+- Include the exact source title, organisation, publication date and direct URL.
+- Keep medical review pending until a suitably qualified professional has genuinely reviewed and approved the content.
+- Never invent reviewer names, credentials, registration numbers, review dates or endorsements.
+- Recheck links and guidance when updating content.
+- Keep the education disclaimer visible.
 
-The site is a static Astro project and can be deployed to Cloudflare Pages or another static host.
+### Adding a health news item
 
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Install command: `npm install`
+Add an entry to `src/data/news.ts` with a unique slug, a short original summary, region, topic, source organisation, source type, publication date, exact source title and direct URL.
 
-Set the production domain only after the project owner has selected and configured it.
+- Clearly attribute announcements, estimates and targets to the organisation that published them.
+- Use `contextDate` when an event date differs from the publication date.
+- Do not present old outbreak figures as live alerts.
+- Keep summaries brief and link to the original source instead of copying full articles.
+- Recheck fast-changing information before featuring it.
+- The current news archive is curated and static; it does not automatically update.
+
+### Adding an educational video
+
+Add a record to `src/data/videos.ts` with the publisher, title, source date, summary, category, canonical source URL and verified YouTube video ID. Confirm that the video is published by the named organisation and remains publicly accessible. Keep the privacy note about external media visible.
 
 ## Editorial and safety principles
 
-- Use reputable, traceable sources for health information.
-- Write in plain language and distinguish established facts from uncertainty.
-- Show publication and review dates, source references, and reviewer credentials on health articles.
-- Have medical content reviewed by an appropriately qualified healthcare professional before publication.
-- Do not offer diagnosis, personalised treatment, or emergency triage.
-- Collect as little personal information as possible, especially sensitive health information.
+- Ridwanah is an educational resource, not a clinic, diagnostic tool or emergency service.
+- Do not provide diagnosis, individual treatment plans, medicine dosing or emergency triage.
+- Use respectful and non-stigmatising language.
+- Distinguish source publication dates from event dates.
+- Clearly label third-party material and external video players.
+- Do not collect sensitive health data in the static MVP.
+- Do not claim medical review unless the reviewer and review details are real and verified.
+- Have medical content reviewed by an appropriately qualified healthcare professional before presenting it as medically reviewed.
+- Obtain legal review of the final privacy notice and terms after the operating entity, hosting provider and contact route are confirmed.
 
-Ridwanah is an educational resource, not a substitute for a qualified healthcare professional.
+## Security, privacy and SEO notes
+
+- The current version has no account registration, contact form, analytics package or advertising integration.
+- Video embeds use YouTube's privacy-enhanced player domain; external media providers still have their own data practices.
+- A production canonical URL and XML sitemap should be configured only after the final domain is selected.
+- `public/robots.txt` allows public pages to be crawled. Add the final sitemap URL after production domain configuration.
+- Recheck metadata, keyboard navigation, contrast, mobile layout and external links as part of release testing.
+
+## Before public launch
+
+The GitHub build is not the same as a production launch. Before deployment:
+1. Complete an editorial review of all educational and news content.
+2. Obtain qualified medical review for health guides that will carry a reviewed label.
+3. Confirm the legal operator, privacy contact, privacy notice and terms with appropriate advice.
+4. Select and configure the production domain, canonical URL and sitemap.
+5. Verify every route and external link on the production host.
+6. Run a final mobile, desktop, accessibility and performance audit.
+
+Cloudflare or another production host should be configured only after those checks are complete.
 
 ## Brand
 
@@ -80,20 +138,3 @@ Ridwanah is an educational resource, not a substitute for a qualified healthcare
 - Warm white: `#fbfdfc`
 
 The official project name is **Ridwanah**.
-
-
-## Health news
-
-Curated news summaries are stored in `src/data/news.ts` and rendered at:
-- `/news` — searchable, region-filtered health news archive
-- The homepage — three latest summaries with links to original reports
-
-To add a news item:
-- Use a unique slug, a concise title and an original plain-language summary.
-- Prefer primary public-health sources such as Nigeria's Federal Ministry of Health, NCDC, Africa CDC and WHO.
-- Record the original source's publication date, source organisation, source type, exact headline and direct URL.
-- If the event date differs from the publication date, record it separately as `contextDate`; never silently substitute one date for the other.
-- Keep summaries within the scope of the source. Attribute estimates, announcements and targets to the organisation that published them.
-- Avoid turning outbreak figures into live alerts. State the date of the report and recheck fast-changing information before featuring it.
-- Link to the original report. Do not copy full articles, imply independent reporting, or present a news summary as personal medical advice.
-- Manually recheck source links and facts before adding or refreshing stories. The current implementation is a curated static archive, not an automatically updating feed.
