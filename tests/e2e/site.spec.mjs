@@ -249,6 +249,7 @@ test("every guide linked from the health library shows review status and attribu
 
 test("health news region filters are keyboard-operable and expose selection state", async ({ page }) => {
   await page.goto("/news/");
+  const allCardsCount = await page.locator("[data-news-card]").count();
   const nigeriaFilter = page.getByRole("button", { name: "Nigeria", exact: true });
   await nigeriaFilter.focus();
   await expect(nigeriaFilter).toBeFocused();
@@ -268,5 +269,5 @@ test("health news region filters are keyboard-operable and expose selection stat
   await page.keyboard.press("Enter");
   await expect(allFilter).toHaveAttribute("aria-pressed", "true");
   await expect(nigeriaFilter).toHaveAttribute("aria-pressed", "false");
-  await expect(visibleCards).toHaveCount(5);
+  await expect(visibleCards).toHaveCount(allCardsCount);
 });
