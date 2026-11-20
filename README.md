@@ -59,7 +59,7 @@ npm run audit
 npm run preview
 ```
 
-GitHub Actions runs `npm run check`, `npm run build` and `npm run audit` on pushes to `main` and on pull requests targeting `main`. The audit checks required output routes, internal links, page metadata and unfinished placeholder copy. Astro generates `404.astro` as the special `404.html` page used by static hosts; it is not a normal `/404` route.
+GitHub Actions runs `npm run check`, `npm run build` and `npm run audit` on pushes to `main` and on pull requests targeting `main`. The audit checks required output routes, internal links, page metadata, basic accessibility landmarks, image alternatives, iframe titles, external new-tab link safety and unfinished placeholder copy. Astro generates `404.astro` as the special `404.html` page used by static hosts; it is not a normal `/404` route.
 
 ## Content structure
 
@@ -68,7 +68,9 @@ GitHub Actions runs `npm run check`, `npm run build` and `npm run audit` on push
 - `src/data/videos.ts` — selected external learning videos.
 - `src/pages/` — route pages.
 - `src/layouts/` — shared page layouts.
-- `src/styles/` — brand, homepage, library, news and shared content-page styles.
+- `src/styles/` — brand, homepage, library, news, shared content-page and accessibility/readability styles.
+- `docs/content-review-workflow.md` — practical source, editorial and qualified medical review process.
+- `docs/pre-launch-checklist.md` — content, legal, technical and deployment checklist.
 - `public/brand/` — Ridwanah SVG brand assets.
 
 ### Adding a health guide
