@@ -34,9 +34,10 @@ The current build is a static Astro website. It does not include accounts, a med
 - Lightweight CSS; no UI framework or runtime database
 - YouTube privacy-enhanced embeds for selected videos
 - GitHub repository and GitHub Actions validation
+- Cloudflare Workers Static Assets configuration with a manual, confirmation-gated deployment workflow
 - Playwright browser smoke tests at desktop, tablet and Android-sized viewport dimensions
 
-The website is designed to remain simple to build and host. No production hosting provider is configured in this repository yet.
+The website is designed to remain simple to build and host. Cloudflare Workers Static Assets configuration and a guarded manual deployment workflow are now prepared, but no Ridwanah Worker has been deployed yet.
 
 ## Run locally
 
@@ -58,10 +59,11 @@ npm run check
 npm run build
 npm run audit
 npm run test:e2e
+npm run cloudflare:dry-run
 npm run preview
 ```
 
-GitHub Actions runs `npm run check`, `npm run build`, `npm run audit` and Playwright browser tests on pushes to `main` and on pull requests targeting `main`. The browser suite emulates desktop, a 768px tablet viewport and a Pixel 7-sized Android viewport. Emulation is not a substitute for testing a physical device. The audit checks required output routes, internal links, page metadata, basic accessibility landmarks, image alternatives, iframe titles, external new-tab link safety and unfinished placeholder copy. Astro generates `404.astro` as the special `404.html` page used by static hosts; it is not a normal `/404` route.
+GitHub Actions runs `npm run check`, `npm run build`, `npm run audit`, a credential-free Cloudflare deployment dry run and Playwright browser tests on pushes to `main` and on pull requests targeting `main`. A separate `Deploy Ridwanah to Cloudflare` workflow is manual-only and requires an explicit confirmation input plus the Cloudflare credentials documented in `docs/cloudflare-deployment.md`. The browser suite emulates desktop, a 768px tablet viewport and a Pixel 7-sized Android viewport. Emulation is not a substitute for testing a physical device. The audit checks required output routes, internal links, page metadata, basic accessibility landmarks, image alternatives, iframe titles, external new-tab link safety and unfinished placeholder copy. Astro generates `404.astro` as the special `404.html` page used by static hosts; it is not a normal `/404` route.
 
 ## Content structure
 
@@ -73,6 +75,7 @@ GitHub Actions runs `npm run check`, `npm run build`, `npm run audit` and Playwr
 - `src/styles/` — brand, homepage, library, news, shared content-page and accessibility/readability styles.
 - `docs/content-review-workflow.md` — practical source, editorial and qualified medical review process.
 - `docs/pre-launch-checklist.md` — content, legal, technical and deployment checklist.
+- `docs/cloudflare-deployment.md` — Cloudflare Workers Static Assets setup and guarded deployment instructions.
 - `public/brand/` — Ridwanah SVG brand assets.
 
 ### Adding a health guide
@@ -133,7 +136,7 @@ The GitHub build is not the same as a production launch. Before deployment:
 5. Verify every route and external link on the production host.
 6. Run a final mobile, desktop, accessibility and performance audit.
 
-Cloudflare or another production host should be configured only after those checks are complete.
+Cloudflare deployment is configured but intentionally requires a manual, confirmed action. The first deployment should be treated as a technical preview; do not announce Ridwanah as a medically reviewed service until the clinical and legal release checks are complete.
 
 ## Brand
 
