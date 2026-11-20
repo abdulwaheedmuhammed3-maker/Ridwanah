@@ -22,3 +22,5 @@ jobs:
         run: npm run check
       - name: Build static website
         run: npm run build
+      - name: Audit generated pages and internal links
+        run: npm run audit
