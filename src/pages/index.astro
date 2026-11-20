@@ -1,5 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { articles } from "../data/articles";
+import "../styles/homepage.css";
+
+const featuredArticles = articles.filter((article) => article.featured).slice(0, 3);
 
 const topics = [
   { number: "01", title: "Understand your health", text: "Build a stronger foundation with clear explanations of how the body works.", tag: "Health basics", tone: "mint" },
@@ -64,7 +68,7 @@ const areas = [
             <h1>Know more.<br /><span>Live healthier.</span></h1>
             <p>Good health decisions begin with good information. Explore clear, practical health education that helps you understand your body, make informed choices, and know when to seek professional care.</p>
             <div class="welcome-actions">
-              <a class="button button-primary" href="#education">Explore health topics <span aria-hidden="true">↗</span></a>
+              <a class="button button-primary" href="/health">Explore health topics <span aria-hidden="true">↗</span></a>
               <a class="text-link" href="#about">Get to know Ridwanah <span aria-hidden="true">→</span></a>
             </div>
             <div class="welcome-note"><span>✳</span> Reliable knowledge. Everyday language. A healthier you.</div>
@@ -89,7 +93,39 @@ const areas = [
           <div><span>♡</span> People-first education</div>
         </section>
 
-        <section class="content-section" id="education">
+        <section class="home-guides" id="featured-guides" aria-labelledby="home-guides-title">
+          <div class="home-guides-heading">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-line"></span> START LEARNING</div>
+              <h2 id="home-guides-title">A good place to <em>start.</em></h2>
+              <p>Explore practical guides written in everyday language and supported by references you can check.</p>
+            </div>
+            <a class="home-guides-all" href="/health">Visit the health library <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="home-guides-grid">
+            {featuredArticles.map((article, index) => (
+              <article class="home-guide-card">
+                <div class:list={["home-guide-art", article.category.toLowerCase()]}>
+                  <span class="home-guide-art-label">{article.categoryLabel}</span>
+                  <span class="home-guide-art-symbol" aria-hidden="true">{article.category === "Prevention" ? "✳" : article.category === "Movement" ? "↗" : "◒"}</span>
+                  <span class="home-guide-art-index">0{index + 1}</span>
+                </div>
+                <div class="home-guide-body">
+                  <div class="home-guide-meta"><span>{article.category}</span><span>{article.readTime}</span></div>
+                  <h3><a href={`/health/${article.slug}`}>{article.title}</a></h3>
+                  <p>{article.description}</p>
+                  <div class="home-guide-footer">
+                    <span class="home-guide-review"><i></i> Medical review pending</span>
+                    <a href={`/health/${article.slug}`}>Read guide <span aria-hidden="true">↗</span></a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <p class="home-guides-note">These are educational drafts awaiting review by a qualified healthcare professional. Each guide lists its supporting sources and review status.</p>
+        </section>
+
+      <section class="content-section" id="education">
           <div class="section-heading">
             <div>
               <div class="eyebrow"><span class="eyebrow-line"></span> A BETTER WAY TO LEARN</div>
