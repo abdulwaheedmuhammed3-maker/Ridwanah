@@ -10,7 +10,8 @@
     "check": "astro check",
     "audit": "node scripts/audit-build.mjs",
     "test:e2e": "playwright test",
-    "deploy:cloudflare": "npm run build && cf deploy ./dist"
+    "deploy:cloudflare": "npm run build && cf deploy ./dist",
+    "cloudflare:dry-run": "cf deploy ./dist --dry-run"
   },
   "dependencies": {
     "astro": "^7.4.13"
