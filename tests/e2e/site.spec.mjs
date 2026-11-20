@@ -283,3 +283,32 @@ test("health library search results count is announced to assistive technology",
   await page.getByRole("searchbox", { name: "Search health articles" }).fill("ridwanah-no-matching-topic");
   await expect(resultCount).toContainText("Showing 0 learning guides");
 });
+
+test("health news search and region filters compose and clear restores the library", async ({ page }) => {
+  await page.goto("/news/");
+  const search = page.getByRole("searchbox", { name: "Search health news" });
+  const nigeriaFilter = page.getByRole("button", { name: "Nigeria", exact: true });
+  const allFilter = page.getByRole("button", { name: "All updates", exact: true });
+  const visibleCards = page.locator("[data-news-card]:visible");
+  const resultCount = page.locator("#news-results-count");
+
+  await search.fill("lead poisoning");
+  await expect(visibleCards).toHaveCount(1);
+  await expect(resultCount).toContainText("Showing 1 update");
+
+  await nigeriaFilter.click();
+  await expect(nigeriaFilter).toHaveAttribute("aria-pressed", "true");
+  await expect(visibleCards).toHaveCount(1);
+
+  await search.fill("ridwanah-no-matching-update");
+  await expect(visibleCards).toHaveCount(0);
+  await expect(page.locator("#news-empty")).toBeVisible();
+
+  await page.getByRole("button", { name: "Clear search and filters" }).click();
+  await expect(search).toHaveValue("");
+  await expect(search).toBeFocused();
+  await expect(allFilter).toHaveAttribute("aria-pressed", "true");
+  await expect(nigeriaFilter).toHaveAttribute("aria-pressed", "false");
+  await expect(visibleCards).toHaveCount(5);
+  await expect(resultCount).toContainText("Showing 5 updates");
+});
