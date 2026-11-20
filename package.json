@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "audit": "node scripts/audit-build.mjs",
+    "audit:sources": "node scripts/audit-sources.mjs",
     "test:e2e": "playwright test",
     "deploy:cloudflare": "npm run build && cf deploy ./dist",
     "cloudflare:dry-run": "cf deploy ./dist --dry-run"
