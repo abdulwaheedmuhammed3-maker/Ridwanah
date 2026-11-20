@@ -52,7 +52,7 @@ for (const htmlFile of htmlFiles) {
   const html = htmlContentByPath.get(htmlFile) ?? "";
   const relative = path.relative(dist, htmlFile);
   const idOccurrences = new Map();
-  for (const match of html.matchAll(/\\bid="([^"]+)"/gi)) {
+  for (const match of html.matchAll(/\bid=([^"]+)"/gi)) {
     const id = match[1];
     const firstLocation = idOccurrences.get(id);
     if (firstLocation) accessibilityProblems.push(relative + ": duplicate id=\"" + id + "\" (first occurrence at " + firstLocation + ")");
