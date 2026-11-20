@@ -30,6 +30,26 @@ npm run build
 npm run preview
 ```
 
+## Health library
+
+The first three educational drafts are stored in `src/data/articles.ts` and rendered through:
+- `/health` — searchable and filterable article library
+- `/health/handwashing-when-and-how`
+- `/health/physical-activity-for-adults`
+- `/health/healthy-eating-everyday-basics`
+
+To add an article, create a new entry in the `articles` array with a unique slug, category, summary, reading time, publication date, key points, sections, and source links. The detail route is generated from that data automatically.
+
+### Editorial requirements
+
+- Use primary, reputable public-health sources wherever possible.
+- Keep claims within the scope of the cited source and avoid unsupported treatment advice.
+- Include source title, organisation, date, and direct URL.
+- Keep the visible medical-review status as pending until an appropriately qualified professional has actually reviewed and approved the article.
+- Never invent reviewer names, professional credentials, review dates, or endorsements.
+- Recheck links and guidance before republishing an article after a source is updated.
+- Keep the educational disclaimer visible on individual articles.
+
 ## Deploy
 
 The site is a static Astro project and can be deployed to Cloudflare Pages or another static host.
