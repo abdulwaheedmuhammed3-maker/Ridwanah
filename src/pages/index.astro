@@ -162,7 +162,7 @@ const areas = [
     <div class="footer-main section-shell">
       <div class="footer-brand"><img src="/brand/ridwanah-logo.svg" alt="Ridwanah" /><p>Helping make health knowledge<br />clearer, one step at a time.</p></div>
       <div class="footer-links"><strong>Explore</strong><a href="#education">Health education</a><a href="#prevention">Prevention</a><a href="#watch">Watch & learn</a></div>
-      <div class="footer-links"><strong>Ridwanah</strong><a href="#about">Our purpose</a><a href="#about">Our standards</a><a href="mailto:hello@ridwanah.org">Contact</a></div>
+      <div class="footer-links"><strong>Ridwanah</strong><a href="#about">Our purpose</a><a href="#about">Our standards</a><span>Contact details coming soon</span></div>
       <div class="footer-signoff"><span class="footer-star">✳</span><p>Learn.<br />Prevent.<br /><em>Live healthier.</em></p></div>
     </div>
     <div class="footer-bottom section-shell"><span>© {new Date().getFullYear()} Ridwanah. All rights reserved.</span><span>Health education with people at heart.</span></div>
@@ -179,7 +179,7 @@ const areas = [
     });
     mobileNav?.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
-        mobileNav.classList.remove("is-open");
+        mobileNav?.classList.remove("is-open");
         toggle?.setAttribute("aria-expanded", "false");
       });
     });
