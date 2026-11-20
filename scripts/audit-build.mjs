@@ -55,6 +55,7 @@ const brokenLinks = [];
 const metadataProblems = [];
 const placeholderPages = [];
 const accessibilityProblems = [];
+const metadataValues = { titles: new Map(), descriptions: new Map() };
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");
