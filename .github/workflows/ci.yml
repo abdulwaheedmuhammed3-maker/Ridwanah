@@ -33,6 +33,8 @@ jobs:
         run: npm run build
       - name: Audit generated pages and internal links
         run: npm run audit
+      - name: Audit health content source integrity
+        run: npm run audit:sources
       - name: Validate Cloudflare static deployment without credentials
         run: npm run cloudflare:dry-run
       - name: Install Chromium for responsive browser tests
