@@ -11,6 +11,12 @@ const requiredRoutes = [
   "/news/", "/watch/", "/prevention/", "/awareness/",
   "/about/", "/editorial-policy/", "/privacy/", "/disclaimer/", "/terms/"
 ];
+const pendingReviewRoutes = [
+  "/health/handwashing-when-and-how/",
+  "/health/physical-activity-for-adults/",
+  "/health/healthy-eating-everyday-basics/",
+  "/health/menstrual-health-understanding-your-cycle/"
+];
 
 function outputPathForRoute(route) {
   if (route === "/") return path.join(dist, "index.html");
@@ -34,6 +40,12 @@ async function collectHtml(directory) {
 const missingRoutes = [];
 for (const route of requiredRoutes) {
   if (!await exists(outputPathForRoute(route))) missingRoutes.push(route);
+}
+for (const route of pendingReviewRoutes) {
+  const html = await readFile(outputPathForRoute(route), "utf8").catch(() => "");
+  if (!/<meta\\s+name="robots"\\s+content="noindex, follow"/i.test(html)) {
+    missingRoutes.push("Pending-review article missing noindex robots directive: " + route);
+  }
 }
 if (!await exists(path.join(dist, "404.html"))) missingRoutes.push("special 404 page");
 if (!await exists(path.join(dist, "robots.txt"))) missingRoutes.push("robots.txt");
