@@ -271,3 +271,15 @@ test("health news region filters are keyboard-operable and expose selection stat
   await expect(nigeriaFilter).toHaveAttribute("aria-pressed", "false");
   await expect(visibleCards).toHaveCount(allCardsCount);
 });
+
+
+test("health library search results count is announced to assistive technology", async ({ page }) => {
+  await page.goto("/health/");
+  const resultCount = page.locator("#result-count");
+  await expect(resultCount).toHaveAttribute("aria-live", "polite");
+  await expect(resultCount).toHaveAttribute("aria-atomic", "true");
+  await page.getByRole("searchbox", { name: "Search health articles" }).fill("menstrual health");
+  await expect(resultCount).toContainText("Showing 1 learning guide");
+  await page.getByRole("searchbox", { name: "Search health articles" }).fill("ridwanah-no-matching-topic");
+  await expect(resultCount).toContainText("Showing 0 learning guides");
+});
