@@ -41,16 +41,16 @@ const sectionTitle = sectionTitles[activeSection];
       <div class="sidebar-label">WORKSPACE</div>
       <nav class="sidebar-nav" aria-label="Desktop navigation">
         <a class="nav-item" href="/"><span class="nav-icon">⌂</span><span>Overview</span></a>
-        <a class:list={["nav-item", activeSection === "health" && "active"]} href="/health"><span class="nav-icon">▤</span><span>Health library</span>{activeSection === "health" && <span class="nav-current"></span>}</a>
-        <a class:list={["nav-item", activeSection === "news" && "active"]} href="/news"><span class="nav-icon">◉</span><span>Health news</span>{activeSection === "news" && <span class="nav-current"></span>}</a>
-        <a class:list={["nav-item", activeSection === "prevention" && "active"]} href="/prevention"><span class="nav-icon">＋</span><span>Prevention</span>{activeSection === "prevention" && <span class="nav-current" />}</a>
-        <a class:list={["nav-item", activeSection === "watch" && "active"]} href="/watch"><span class="nav-icon">▷</span><span>Watch & learn</span>{activeSection === "watch" && <span class="nav-current" />}</a>
-        <a class:list={["nav-item", activeSection === "awareness" && "active"]} href="/awareness"><span class="nav-icon">◎</span><span>Awareness</span>{activeSection === "awareness" && <span class="nav-current" />}</a>
+        <a class:list={["nav-item", activeSection === "health" && "active"]} href="/health" aria-current={activeSection === "health" ? "page" : undefined}><span class="nav-icon">▤</span><span>Health library</span>{activeSection === "health" && <span class="nav-current"></span>}</a>
+        <a class:list={["nav-item", activeSection === "news" && "active"]} href="/news" aria-current={activeSection === "news" ? "page" : undefined}><span class="nav-icon">◉</span><span>Health news</span>{activeSection === "news" && <span class="nav-current"></span>}</a>
+        <a class:list={["nav-item", activeSection === "prevention" && "active"]} href="/prevention" aria-current={activeSection === "prevention" ? "page" : undefined}><span class="nav-icon">＋</span><span>Prevention</span>{activeSection === "prevention" && <span class="nav-current" />}</a>
+        <a class:list={["nav-item", activeSection === "watch" && "active"]} href="/watch" aria-current={activeSection === "watch" ? "page" : undefined}><span class="nav-icon">▷</span><span>Watch & learn</span>{activeSection === "watch" && <span class="nav-current" />}</a>
+        <a class:list={["nav-item", activeSection === "awareness" && "active"]} href="/awareness" aria-current={activeSection === "awareness" ? "page" : undefined}><span class="nav-icon">◎</span><span>Awareness</span>{activeSection === "awareness" && <span class="nav-current" />}</a>
       </nav>
       <div class="sidebar-label sidebar-label-spaced">DISCOVER</div>
       <nav class="sidebar-nav" aria-label="Discover navigation">
-        <a class:list={["nav-item", activeSection === "about" && "active"]} href="/about"><span class="nav-icon">♡</span><span>About Ridwanah</span>{activeSection === "about" && <span class="nav-current" />}</a>
-        <a class:list={["nav-item", activeSection === "editorial" && "active"]} href="/editorial-policy"><span class="nav-icon">✓</span><span>Editorial standards</span>{activeSection === "editorial" && <span class="nav-current" />}</a>
+        <a class:list={["nav-item", activeSection === "about" && "active"]} href="/about" aria-current={activeSection === "about" ? "page" : undefined}><span class="nav-icon">♡</span><span>About Ridwanah</span>{activeSection === "about" && <span class="nav-current" />}</a>
+        <a class:list={["nav-item", activeSection === "editorial" && "active"]} href="/editorial-policy" aria-current={activeSection === "editorial" ? "page" : undefined}><span class="nav-icon">✓</span><span>Editorial standards</span>{activeSection === "editorial" && <span class="nav-current" />}</a>
       </nav>
       <div class="sidebar-bottom">
         <div class="sidebar-tip-icon">✳</div>
@@ -91,9 +91,9 @@ const sectionTitle = sectionTitles[activeSection];
 
   <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
     <a class="mobile-nav-item" href="/"><span>⌂</span><small>Home</small></a>
-    <a class:list={["mobile-nav-item", activeSection === "health" && "selected"]} href="/health"><span>▤</span><small>Learn</small></a>
-    <a class:list={["mobile-nav-item", activeSection === "news" && "selected"]} href="/news"><span>◉</span><small>News</small></a>
-    <a class:list={["mobile-nav-item", activeSection === "watch" && "selected"]} href="/watch"><span>▷</span><small>Watch</small></a>
-    <a class:list={["mobile-nav-item", activeSection === "about" && "selected"]} href="/about"><span>♡</span><small>About</small></a>
+    <a class:list={["mobile-nav-item", activeSection === "health" && "selected"]} href="/health" aria-current={activeSection === "health" ? "page" : undefined}><span>▤</span><small>Learn</small></a>
+    <a class:list={["mobile-nav-item", activeSection === "news" && "selected"]} href="/news" aria-current={activeSection === "news" ? "page" : undefined}><span>◉</span><small>News</small></a>
+    <a class:list={["mobile-nav-item", activeSection === "watch" && "selected"]} href="/watch" aria-current={activeSection === "watch" ? "page" : undefined}><span>▷</span><small>Watch</small></a>
+    <a class:list={["mobile-nav-item", activeSection === "about" && "selected"]} href="/about" aria-current={activeSection === "about" ? "page" : undefined}><span>♡</span><small>About</small></a>
   </nav>
 </BaseLayout>
