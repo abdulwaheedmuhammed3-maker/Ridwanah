@@ -246,3 +246,28 @@ test("every guide linked from the health library shows review status and attribu
     }
   }
 });
+
+test("health news region filters are keyboard-operable and expose selection state", async ({ page }) => {
+  await page.goto("/news/");
+  const allCardsCount = await page.locator("[data-news-card]").count();
+  const nigeriaFilter = page.getByRole("button", { name: "Nigeria", exact: true });
+  await nigeriaFilter.focus();
+  await expect(nigeriaFilter).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(nigeriaFilter).toHaveAttribute("aria-pressed", "true");
+
+  const visibleCards = page.locator("[data-news-card]:visible");
+  expect(await visibleCards.count()).toBeGreaterThan(0);
+  const visibleRegions = await visibleCards.evaluateAll((cards) =>
+    cards.map((card) => card.getAttribute("data-region"))
+  );
+  expect(visibleRegions.every((region) => region === "nigeria")).toBe(true);
+
+  const allFilter = page.getByRole("button", { name: "All updates", exact: true });
+  await allFilter.focus();
+  await expect(allFilter).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(allFilter).toHaveAttribute("aria-pressed", "true");
+  await expect(nigeriaFilter).toHaveAttribute("aria-pressed", "false");
+  await expect(visibleCards).toHaveCount(allCardsCount);
+});
