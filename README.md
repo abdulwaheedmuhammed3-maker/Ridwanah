@@ -15,6 +15,7 @@ The current build is a static Astro website. It does not include accounts, a med
 | `/health/handwashing-when-and-how` | Handwashing guide |
 | `/health/physical-activity-for-adults` | Adult physical-activity guide |
 | `/health/healthy-eating-everyday-basics` | Healthy eating guide |
+| `/health/menstrual-health-understanding-your-cycle` | Menstrual health guide |
 | `/news` | Curated, source-linked public-health news |
 | `/watch` | Selected educational videos from WHO |
 | `/prevention` | Prevention and healthy-living learning hub |
@@ -24,7 +25,7 @@ The current build is a static Astro website. It does not include accounts, a med
 | `/privacy` | Privacy notice for the current static site |
 | `/disclaimer` | Health information disclaimer |
 | `/terms` | Website terms of use |
-| `/404` | Not-found page |
+
 
 ## Technology
 
@@ -49,15 +50,16 @@ Open the local address printed by Astro.
 
 ## Validate and build
 
-Run both checks before committing:
+Run the checks before committing:
 
 ```bash
 npm run check
 npm run build
+npm run audit
 npm run preview
 ```
 
-GitHub Actions runs `npm run check` and `npm run build` on pushes to `main` and on pull requests targeting `main`.
+GitHub Actions runs `npm run check`, `npm run build` and `npm run audit` on pushes to `main` and on pull requests targeting `main`. The audit checks required output routes, internal links, page metadata and unfinished placeholder copy. Astro generates `404.astro` as the special `404.html` page used by static hosts; it is not a normal `/404` route.
 
 ## Content structure
 
