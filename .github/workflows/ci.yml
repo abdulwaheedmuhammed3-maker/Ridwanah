@@ -25,3 +25,7 @@ jobs:
         run: npm run build
       - name: Audit generated pages and internal links
         run: npm run audit
+      - name: Install Chromium for responsive browser tests
+        run: npx playwright install --with-deps chromium
+      - name: Test desktop, tablet and Android-sized layouts
+        run: npm run test:e2e
