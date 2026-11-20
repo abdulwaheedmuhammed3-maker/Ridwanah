@@ -51,6 +51,13 @@ const metadataValues = { titles: new Map(), descriptions: new Map() };
 for (const htmlFile of htmlFiles) {
   const html = htmlContentByPath.get(htmlFile) ?? "";
   const relative = path.relative(dist, htmlFile);
+  const idOccurrences = new Map();
+  for (const match of html.matchAll(/\\bid="([^"]+)"/gi)) {
+    const id = match[1];
+    const firstLocation = idOccurrences.get(id);
+    if (firstLocation) accessibilityProblems.push(relative + ": duplicate id=\"" + id + "\" (first occurrence at " + firstLocation + ")");
+    else idOccurrences.set(id, match.index);
+  }
   const normalizedRelative = relative.split(path.sep).join("/");
 
   // Audit every generated health article page so new guides cannot silently
