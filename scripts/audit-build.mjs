@@ -55,7 +55,7 @@ for (const htmlFile of htmlFiles) {
   // lose the noindex protection while qualified medical review is pending.
   if (/^health\/[^/]+\/index\.html$/i.test(normalizedRelative)) {
     pendingReviewArticleCount += 1;
-    if (!/<meta\\s+name="robots"\\s+content="noindex, follow"/i.test(html)) {
+    if (!/<meta\s+name="robots"\s+content="noindex, follow"/i.test(html)) {
       missingRoutes.push("Pending-review article missing noindex robots directive: " + normalizedRelative);
     }
   }
