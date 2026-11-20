@@ -4,11 +4,11 @@
 
 Ridwanah is a pre-rendered Astro site. The deployment target is **Cloudflare Workers Static Assets**, deployed as an assets-only Worker. The project uses Cloudflare's `cf` CLI, not Wrangler.
 
-- Worker name: `ridwanah`
+- Worker name: `ridwanah-preview`
 - Static build directory: `dist/`
 - HTML paths: automatic trailing-slash handling
 - Unknown paths: the generated `404.html` is served with HTTP 404
-- Public preview address after deployment: `https://ridwanah.abdulwaheedmuhammed3-996.workers.dev`
+- Public preview address after deployment: `https://ridwanah-preview.abdulwaheedmuhammed3-996.workers.dev`
 - No custom domain is attached yet. A custom domain requires adding a domain/zone to the Cloudflare account and completing DNS configuration.
 
 The Cloudflare configuration is in `cloudflare.config.ts`. The CLI is pinned in `package.json` at `cf@1.0.0-rc.2`.
@@ -44,7 +44,7 @@ The account ID is a variable, not a secret. The API token must remain a secret.
 ### 3. Run a deployment intentionally
 
 1. Open the GitHub **Actions** tab.
-2. Select **Deploy Ridwanah to Cloudflare**.
+2. Select **Deploy Ridwanah preview to Cloudflare**.
 3. Select **Run workflow** on the `main` branch.
 4. Tick the `publish` confirmation input only when you intend to publish the current main build to the public `workers.dev` address.
 5. Start the workflow and wait for all steps to pass.
