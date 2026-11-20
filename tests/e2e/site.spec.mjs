@@ -189,3 +189,29 @@ test("every curated news brief and video exposes a secure original-source link",
     expect(link.rel).toContain("noopener");
   }
 });
+
+
+test("keyboard users can reveal skip link and reach primary navigation", async ({ page }) => {
+  await page.goto("/");
+  await page.keyboard.press("Tab");
+  const skipLink = page.locator(".skip-link");
+  await expect(skipLink).toBeFocused();
+  await expect(skipLink).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("main")).toBeFocused();
+
+  // Confirm navigation controls remain keyboard-focusable without relying on pointer input.
+  const firstNavLink = page.locator(".sidebar a").first();
+  await firstNavLink.focus();
+  await expect(firstNavLink).toBeFocused();
+});
+
+test("health library filter controls expose keyboard focus and activate", async ({ page }) => {
+  await page.goto("/health/");
+  const wellbeingFilter = page.getByRole("button", { name: "Wellbeing", exact: true });
+  await wellbeingFilter.focus();
+  await expect(wellbeingFilter).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("[data-article-card]:visible")).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: /Menstrual health:/i })).toBeVisible();
+});
