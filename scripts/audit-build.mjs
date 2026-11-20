@@ -11,12 +11,6 @@ const requiredRoutes = [
   "/news/", "/watch/", "/prevention/", "/awareness/",
   "/about/", "/editorial-policy/", "/privacy/", "/disclaimer/", "/terms/"
 ];
-const pendingReviewRoutes = [
-  "/health/handwashing-when-and-how/",
-  "/health/physical-activity-for-adults/",
-  "/health/healthy-eating-everyday-basics/",
-  "/health/menstrual-health-understanding-your-cycle/"
-];
 
 function outputPathForRoute(route) {
   if (route === "/") return path.join(dist, "index.html");
@@ -41,12 +35,6 @@ const missingRoutes = [];
 for (const route of requiredRoutes) {
   if (!await exists(outputPathForRoute(route))) missingRoutes.push(route);
 }
-for (const route of pendingReviewRoutes) {
-  const html = await readFile(outputPathForRoute(route), "utf8").catch(() => "");
-  if (!/<meta\s+name="robots"\s+content="noindex, follow"/i.test(html)) {
-    missingRoutes.push("Pending-review article missing noindex robots directive: " + route);
-  }
-}
 if (!await exists(path.join(dist, "404.html"))) missingRoutes.push("special 404 page");
 if (!await exists(path.join(dist, "robots.txt"))) missingRoutes.push("robots.txt");
 
@@ -55,11 +43,22 @@ const brokenLinks = [];
 const metadataProblems = [];
 const placeholderPages = [];
 const accessibilityProblems = [];
+let pendingReviewArticleCount = 0;
 const metadataValues = { titles: new Map(), descriptions: new Map() };
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");
   const relative = path.relative(dist, htmlFile);
+  const normalizedRelative = relative.split(path.sep).join("/");
+
+  // Audit every generated health article page so new guides cannot silently
+  // lose the noindex protection while qualified medical review is pending.
+  if (/^health\/[^/]+\/index\.html$/i.test(normalizedRelative)) {
+    pendingReviewArticleCount += 1;
+    if (!/<meta\s+name="robots"\s+content="noindex, follow"/i.test(html)) {
+      missingRoutes.push("Pending-review article missing noindex robots directive: " + normalizedRelative);
+    }
+  }
 
   if (!/<title>[^<]+<\/title>/i.test(html)) metadataProblems.push(relative + ": missing title");
   if (!/<meta\s+name="description"\s+content="[^"]+"/i.test(html)) metadataProblems.push(relative + ": missing meta description");
@@ -127,5 +126,5 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log("Ridwanah build audit passed.");
-  console.log(`Checked ${requiredRoutes.length} routes, ${htmlFiles.length} HTML pages, internal links, metadata and accessibility basics.`);
+  console.log(`Checked ${requiredRoutes.length} required routes, ${pendingReviewArticleCount} health article pages for noindex protection, ${htmlFiles.length} HTML pages, internal links, metadata and accessibility basics.`);
 }
