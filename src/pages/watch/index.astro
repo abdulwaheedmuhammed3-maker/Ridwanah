@@ -1,0 +1,84 @@
+---
+import LibraryLayout from "../../layouts/LibraryLayout.astro";
+import { learningVideos } from "../../data/videos";
+import "../../styles/section-pages.css";
+
+const categories = ["All videos", "Hand hygiene", "Infection prevention"];
+---
+<LibraryLayout activeSection="watch" title="Watch & Learn — Ridwanah" description="Watch selected public-health videos from trusted organisations, with clear source attribution.">
+  <div id="top" class="resource-page">
+    <div class="library-breadcrumb"><a href="/">Home</a><span>/</span><span>Watch & learn</span></div>
+    <section class="resource-hero">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> LEARN THROUGH VISUAL EXPLANATIONS</div>
+        <h1>Watch, understand,<br /><em>learn with confidence.</em></h1>
+        <p>Selected educational videos from established public-health organisations. Each video is clearly attributed so you can explore the original source.</p>
+      </div>
+      <div class="resource-hero-stamp"><span>▷</span><strong>Watch & learn</strong><small>Trusted sources · Plain-language context</small></div>
+    </section>
+
+    <section class="resource-toolbar" aria-label="Filter videos">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> VIDEO LIBRARY</div><h2>Small lessons. Useful knowledge.</h2></div>
+      <div class="resource-filters">
+        {categories.map((category, index) => <button class:list={["resource-filter", index === 0 && "is-active"]} type="button" data-video-filter={index === 0 ? "all" : category.toLowerCase()} aria-pressed={index === 0 ? "true" : "false"}>{category}</button>)}
+      </div>
+    </section>
+
+    <section class="video-grid" aria-label="Educational videos">
+      {learningVideos.map((video) => (
+        <article class="video-card" data-video-card data-category={video.category.toLowerCase()}>
+          <div class="video-frame">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${video.embedId}`}
+              title={video.title}
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="video-card-content">
+            <div class="video-card-meta"><span>{video.category}</span><time>{video.publishedAt}</time></div>
+            <h2>{video.title}</h2>
+            <p>{video.summary}</p>
+            <div class="video-card-footer"><strong>{video.publisher}</strong><a href={video.sourceUrl} target="_blank" rel="noopener noreferrer">Open on YouTube <span aria-hidden="true">↗</span></a></div>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <div class="resource-empty" id="video-empty" hidden><strong>No videos in this category yet.</strong><button type="button" id="clear-video-filter">Show all videos</button></div>
+
+    <section class="resource-callout">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> MORE FROM PUBLIC-HEALTH EXPERTS</div><h2>Explore official video channels.</h2><p>Ridwanah does not produce or medically endorse third-party videos. Visit the source channels to see their wider educational collections.</p></div>
+      <div class="resource-link-list">
+        <a href="https://www.youtube.com/@WHO" target="_blank" rel="noopener noreferrer">World Health Organization <span>↗</span></a>
+        <a href="https://www.youtube.com/@AfricaCDC" target="_blank" rel="noopener noreferrer">Africa CDC <span>↗</span></a>
+      </div>
+    </section>
+
+    <p class="resource-disclaimer">Videos are hosted by YouTube and may be updated or removed by their publishers. Viewing a video does not replace guidance from a qualified healthcare professional. External players may process technical information under the platform's privacy policy.</p>
+  </div>
+  <script>
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-video-filter]"));
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-video-card]"));
+    const empty = document.querySelector<HTMLElement>("#video-empty");
+    const clear = document.querySelector<HTMLButtonElement>("#clear-video-filter");
+    function applyFilter(category: string) {
+      let shown = 0;
+      cards.forEach((card) => {
+        const visible = category === "all" || card.dataset.category === category;
+        card.hidden = !visible;
+        if (visible) shown += 1;
+      });
+      if (empty) empty.hidden = shown !== 0;
+      buttons.forEach((button) => {
+        const selected = button.dataset.videoFilter === category;
+        button.classList.toggle("is-active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+    buttons.forEach((button) => button.addEventListener("click", () => applyFilter(button.dataset.videoFilter ?? "all")));
+    clear?.addEventListener("click", () => applyFilter("all"));
+  </script>
+</LibraryLayout>
