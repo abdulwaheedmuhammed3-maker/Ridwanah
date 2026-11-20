@@ -78,6 +78,9 @@
 @media (max-width: 560px) {
   .campaign-card, .campaign-copy, .campaign-card > a { min-width: 0; }
   .campaign-card > a { white-space: normal; overflow-wrap: anywhere; }
+  .resource-page, .resource-hero, .resource-toolbar, .campaign-list, .campaign-card, .campaign-copy, .resource-callout, .resource-link-list { min-width: 0; max-width: 100%; }
+  .resource-page h1, .resource-page h2, .resource-page p, .resource-page small, .resource-page a { overflow-wrap: anywhere; }
+  .resource-toolbar-link { max-width: 100%; white-space: normal; }
   .resource-hero { display: block; padding: 21px 18px; }
   .resource-hero h1, .policy-hero h1 { font-size: 37px; }
   .resource-hero > div:first-child > p, .policy-hero > p { font-size: 10px; }
