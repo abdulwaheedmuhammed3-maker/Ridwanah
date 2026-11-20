@@ -198,7 +198,8 @@ test("keyboard users can reveal skip link and reach primary navigation", async (
   await expect(skipLink).toBeFocused();
   await expect(skipLink).toBeVisible();
   await page.keyboard.press("Enter");
-  await expect(page.locator("main")).toBeFocused();
+  await expect(page).toHaveURL(/#main-content$/);
+  await expect(page.locator("main")).toBeVisible();
 
   // Confirm navigation controls remain keyboard-focusable without relying on pointer input.
   const firstNavLink = page.locator(".sidebar a").first();
