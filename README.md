@@ -15,7 +15,7 @@ The repository contains the first responsive website foundation:
 
 ## Run locally
 
-Requirements: Node.js 20.3.0 or later.
+Requirements: Node.js 22.23.4 or later, matching the current Astro 7 requirement.
 
 ```bash
 npm install
