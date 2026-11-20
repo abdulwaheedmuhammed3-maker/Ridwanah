@@ -1,0 +1,30 @@
+name: Dependency security audit
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.23.4
+          package-manager-cache: false
+      - name: Install dependencies
+        run: npm install
+      - name: Audit dependency vulnerabilities
+        run: npm audit --audit-level=high
