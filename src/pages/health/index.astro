@@ -1,0 +1,134 @@
+---
+import LibraryLayout from "../../layouts/LibraryLayout.astro";
+import { articles } from "../../data/articles";
+
+const categories = ["All topics", "Prevention", "Movement", "Nutrition"];
+---
+<LibraryLayout title="Health Library — Ridwanah" description="Search practical health explainers on prevention, movement and nutrition.">
+  <div id="top" class="library-page">
+    <div class="library-breadcrumb"><a href="/">Home</a><span>/</span><span>Health library</span></div>
+
+    <section class="library-hero">
+      <div class="library-hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> LEARN SOMETHING FOR YOUR HEALTH</div>
+        <h1>A clearer way to<br /><em>understand health.</em></h1>
+        <p>Explore approachable explainers that help you build knowledge, understand prevention and make more informed everyday choices.</p>
+      </div>
+      <div class="library-hero-side">
+        <span class="library-hero-icon">▤</span>
+        <strong>Knowledge you can use.</strong>
+        <small>Start with a question. Leave with a clearer picture.</small>
+      </div>
+    </section>
+
+    <section class="library-controls" aria-label="Search and filter health articles">
+      <div class="library-search-wrap">
+        <span class="search-symbol" aria-hidden="true">⌕</span>
+        <label class="visually-hidden" for="library-search">Search health articles</label>
+        <input id="library-search" type="search" placeholder="Search a health topic, habit or question..." autocomplete="off" />
+        <span class="search-shortcut">SEARCH</span>
+      </div>
+      <div class="category-filters" aria-label="Filter by topic">
+        {categories.map((category, index) => (
+          <button class:list={["filter-chip", index === 0 && "is-active"]} type="button" data-filter={category.toLowerCase()} aria-pressed={index === 0 ? "true" : "false"}>{category}</button>
+        ))}
+      </div>
+      <div class="library-results-line">
+        <div><strong>Explore the library</strong><span id="result-count">Showing {articles.length} learning guides</span></div>
+        <span class="library-results-note">Plain language · Referenced sources</span>
+      </div>
+    </section>
+
+    <section class="article-grid" id="article-grid" aria-label="Health articles">
+      {articles.map((article, index) => (
+        <article
+          class:list={["library-card", index === 0 && "featured-article"]}
+          data-article-card
+          data-category={article.category.toLowerCase()}
+          data-title={`${article.title} ${article.description} ${article.category} ${article.takeaways.join(" ")}`.toLowerCase()}
+        >
+          <div class:list={["article-card-art", article.category.toLowerCase()]}>
+            <span class="article-art-label">{article.categoryLabel}</span>
+            <span class="article-art-symbol">{article.category === "Prevention" ? "✳" : article.category === "Movement" ? "↗" : "◒"}</span>
+            <span class="article-art-index">0{index + 1}</span>
+          </div>
+          <div class="library-card-body">
+            <div class="article-meta-top"><span>{article.category}</span><span>{article.readTime}</span></div>
+            <h2><a href={`/health/${article.slug}`}>{article.title}</a></h2>
+            <p>{article.description}</p>
+            <div class="article-card-footer">
+              <span class="review-pending"><i></i> Medical review pending</span>
+              <a href={`/health/${article.slug}`} aria-label={`Read ${article.title}`}>Read guide <span>↗</span></a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <div class="library-empty" id="library-empty" hidden>
+      <span>⌕</span>
+      <strong>No matching guides yet</strong>
+      <p>Try another search word or select a different topic.</p>
+      <button type="button" id="clear-library-filters">Clear search and filters</button>
+    </div>
+
+    <section class="library-editorial-note">
+      <div class="editorial-note-icon">i</div>
+      <div>
+        <strong>How to use this library</strong>
+        <p>These first articles are educational drafts based on the sources listed on each page. They are awaiting review by a qualified healthcare professional before being treated as medically reviewed Ridwanah content. They do not replace individual medical advice.</p>
+      </div>
+      <a href="/#standards">Content standards <span>↗</span></a>
+    </section>
+  </div>
+
+  <script>
+    const searchInput = document.querySelector<HTMLInputElement>("#library-search");
+    const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-filter]"));
+    const articleCards = Array.from(document.querySelectorAll<HTMLElement>("[data-article-card]"));
+    const resultCount = document.querySelector<HTMLElement>("#result-count");
+    const emptyState = document.querySelector<HTMLElement>("#library-empty");
+    const clearButton = document.querySelector<HTMLButtonElement>("#clear-library-filters");
+    let activeCategory = "all";
+
+    function updateLibrary() {
+      const searchTerm = (searchInput?.value ?? "").trim().toLowerCase();
+      let visibleCount = 0;
+
+      articleCards.forEach((card) => {
+        const categoryMatches = activeCategory === "all" || card.dataset.category === activeCategory;
+        const textMatches = (card.dataset.title ?? "").includes(searchTerm);
+        const isVisible = categoryMatches && textMatches;
+        card.hidden = !isVisible;
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (resultCount) resultCount.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? "learning guide" : "learning guides"}`;
+      if (emptyState) emptyState.hidden = visibleCount !== 0;
+    }
+
+    searchInput?.addEventListener("input", updateLibrary);
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeCategory = button.dataset.filter ?? "all";
+        filterButtons.forEach((item) => {
+          const selected = item === button;
+          item.classList.toggle("is-active", selected);
+          item.setAttribute("aria-pressed", String(selected));
+        });
+        updateLibrary();
+      });
+    });
+    clearButton?.addEventListener("click", () => {
+      if (searchInput) searchInput.value = "";
+      activeCategory = "all";
+      filterButtons.forEach((item) => {
+        const selected = item.dataset.filter === "all";
+        item.classList.toggle("is-active", selected);
+        item.setAttribute("aria-pressed", String(selected));
+      });
+      updateLibrary();
+      searchInput?.focus();
+    });
+  </script>
+</LibraryLayout>
