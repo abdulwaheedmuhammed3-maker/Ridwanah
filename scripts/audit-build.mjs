@@ -43,7 +43,7 @@ for (const route of requiredRoutes) {
 }
 for (const route of pendingReviewRoutes) {
   const html = await readFile(outputPathForRoute(route), "utf8").catch(() => "");
-  if (!/<meta\\s+name="robots"\\s+content="noindex, follow"/i.test(html)) {
+  if (!/<meta\s+name="robots"\s+content="noindex, follow"/i.test(html)) {
     missingRoutes.push("Pending-review article missing noindex robots directive: " + route);
   }
 }
