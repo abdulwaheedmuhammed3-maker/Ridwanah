@@ -155,3 +155,37 @@ test("video library category filtering shows the matching video", async ({ page 
   await page.getByRole("button", { name: "All videos", exact: true }).click();
   await expect(page.locator("[data-video-card]:visible")).toHaveCount(2);
 });
+
+test("every curated news brief and video exposes a secure original-source link", async ({ page }) => {
+  await page.goto("/news/");
+  const newsLinks = page.locator(".news-source a");
+  await expect(newsLinks).toHaveCount(5);
+  const newsDestinations = await newsLinks.evaluateAll((anchors) =>
+    anchors.map((anchor) => ({
+      href: anchor.getAttribute("href") ?? "",
+      target: anchor.getAttribute("target"),
+      rel: anchor.getAttribute("rel") ?? ""
+    }))
+  );
+  for (const link of newsDestinations) {
+    expect(link.href).toMatch(/^https:\/\//);
+    expect(link.target).toBe("_blank");
+    expect(link.rel).toContain("noopener");
+  }
+
+  await page.goto("/watch/");
+  const videoLinks = page.locator(".video-card-footer a");
+  await expect(videoLinks).toHaveCount(2);
+  const videoDestinations = await videoLinks.evaluateAll((anchors) =>
+    anchors.map((anchor) => ({
+      href: anchor.getAttribute("href") ?? "",
+      target: anchor.getAttribute("target"),
+      rel: anchor.getAttribute("rel") ?? ""
+    }))
+  );
+  for (const link of videoDestinations) {
+    expect(link.href).toMatch(/^https:\/\//);
+    expect(link.target).toBe("_blank");
+    expect(link.rel).toContain("noopener");
+  }
+});
