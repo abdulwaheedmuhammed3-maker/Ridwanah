@@ -41,8 +41,8 @@ for (const segment of newsSegments) {
   const slug = segment.split('"')[0];
   const sourceFields = segment.match(/sourceName:\s*"[^"]*"\s*,[\s\S]*?sourceUrl:\s*"[^"]*"/);
   if (!sourceFields) { problems.push("News " + slug + ": missing source metadata"); continue; }
-  validateSourceBlock(sourceFields[0], "News " + slug);
-  const url = sourceFields[0].match(/sourceUrl:\s*"([^"]*)"/)?.[1] ?? "";
+  validateSourceBlock(segment, "News " + slug);
+  const url = segment.match(/sourceUrl:\s*"([^"]*)"/)?.[1] ?? "";
   if (url && (segment.match(/sourceUrl:\s*"([^"]*)"/g) ?? []).length > 1) problems.push("News " + slug + ": multiple sourceUrl fields");
 }
 
