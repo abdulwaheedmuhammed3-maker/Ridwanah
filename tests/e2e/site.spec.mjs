@@ -219,3 +219,30 @@ test("health library filter controls expose keyboard focus and activate", async 
   await expect(page.locator("[data-article-card]:visible")).toHaveCount(1);
   await expect(page.getByRole("heading", { name: /Menstrual health:/i })).toBeVisible();
 });
+
+test("every guide linked from the health library shows review status and attributed sources", async ({ page }) => {
+  await page.goto("/health/");
+  const guideLinks = await page.locator("[data-article-card] h2 a").evaluateAll((links) =>
+    links.map((link) => link.getAttribute("href")).filter((href) => href && href.startsWith("/health/"))
+  );
+  expect(guideLinks.length, "Expected health library to list at least one guide").toBeGreaterThan(0);
+
+  for (const route of guideLinks) {
+    await page.goto(route);
+    await expect(page.locator(".article-review-banner")).toContainText("Educational draft — medical review pending");
+    const sourceLinks = page.locator(".article-sources ol a");
+    expect(await sourceLinks.count(), `Expected attributed sources on ${route}`).toBeGreaterThan(0);
+    const destinations = await sourceLinks.evaluateAll((anchors) =>
+      anchors.map((anchor) => ({
+        href: anchor.getAttribute("href") ?? "",
+        target: anchor.getAttribute("target"),
+        rel: anchor.getAttribute("rel") ?? ""
+      }))
+    );
+    for (const link of destinations) {
+      expect(link.href, `Invalid source URL on ${route}`).toMatch(/^https:\/\//);
+      expect(link.target).toBe("_blank");
+      expect(link.rel).toContain("noopener");
+    }
+  }
+});
