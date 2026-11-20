@@ -38,8 +38,8 @@ const sectionTitle = sectionTitles[activeSection];
       <div class="sidebar-label">WORKSPACE</div>
       <nav class="sidebar-nav" aria-label="Desktop navigation">
         <a class="nav-item" href="/"><span class="nav-icon">⌂</span><span>Overview</span></a>
-        <a class:list={["nav-item", !onNewsPage && "active"]} href="/health"><span class="nav-icon">▤</span><span>Health library</span>{!onNewsPage && <span class="nav-current"></span>}</a>
-        <a class:list={["nav-item", onNewsPage && "active"]} href="/news"><span class="nav-icon">◉</span><span>Health news</span>{onNewsPage && <span class="nav-current"></span>}</a>
+        <a class:list={["nav-item", activeSection === "health" && "active"]} href="/health"><span class="nav-icon">▤</span><span>Health library</span>{activeSection === "health" && <span class="nav-current"></span>}</a>
+        <a class:list={["nav-item", activeSection === "news" && "active"]} href="/news"><span class="nav-icon">◉</span><span>Health news</span>{activeSection === "news" && <span class="nav-current"></span>}</a>
         <a class:list={["nav-item", activeSection === "prevention" && "active"]} href="/prevention"><span class="nav-icon">＋</span><span>Prevention</span>{activeSection === "prevention" && <span class="nav-current" />}</a>
         <a class:list={["nav-item", activeSection === "watch" && "active"]} href="/watch"><span class="nav-icon">▷</span><span>Watch & learn</span>{activeSection === "watch" && <span class="nav-current" />}</a>
         <a class:list={["nav-item", activeSection === "awareness" && "active"]} href="/awareness"><span class="nav-icon">◎</span><span>Awareness</span>{activeSection === "awareness" && <span class="nav-current" />}</a>
