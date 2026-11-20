@@ -13,7 +13,7 @@
 .library-hero-side strong { color: var(--teal-950); font-family: var(--font-display); font-size: 12px; }
 .library-hero-side small { color: var(--muted); font-size: 9px; line-height: 1.65; }
 .library-controls { margin: 26px 0 17px; }
-.library-search-wrap { height: 49px; display: flex; align-items: center; gap: 11px; padding: 0 15px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.library-search-wrap { height: 49px; display: flex; align-items: center; gap: 11px; padding: 0 15px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }\n.library-search-wrap:focus-within { outline: 3px solid #ff806b88; outline-offset: 3px; }
 .search-symbol { color: var(--teal-700); font-size: 22px; line-height: 1; }
 .library-search-wrap input { flex: 1; width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--teal-950); font-family: var(--font-body); font-size: 11px; }
 .library-search-wrap input::placeholder { color: #9aaca6; }
