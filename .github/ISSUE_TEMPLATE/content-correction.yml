@@ -1,0 +1,50 @@
+name: Content correction or source concern
+description: Report a possible error, outdated information, unclear wording or broken source link.
+title: "[Content concern]: "
+labels: ["content-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Privacy warning:** This form is public. Do not include your personal health information, details about another person's health, contact details, or confidential information. Ridwanah is not a medical advice or emergency service.
+  - type: dropdown
+    id: page
+    attributes:
+      label: Which area is affected?
+      options:
+        - Health learning guide
+        - Health news
+        - Video
+        - Prevention page
+        - Awareness campaign
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: page-url
+    attributes:
+      label: Page URL or title
+      placeholder: Public page link or title
+    validations:
+      required: true
+  - type: textarea
+    id: concern
+    attributes:
+      label: What may need correction?
+      description: Describe the public page text or link only. Do not include private or personal medical details.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Public source supporting your concern (optional)
+      description: Link to an authoritative, publicly available source if possible.
+    validations:
+      required: false
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Acknowledgement
+      options:
+        - label: I have not included personal or confidential health information.
+          required: true
