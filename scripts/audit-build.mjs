@@ -55,6 +55,7 @@ const brokenLinks = [];
 const metadataProblems = [];
 const placeholderPages = [];
 const accessibilityProblems = [];
+const metadataValues = { titles: new Map(), descriptions: new Map() };
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");
@@ -63,6 +64,21 @@ for (const htmlFile of htmlFiles) {
   if (!/<title>[^<]+<\/title>/i.test(html)) metadataProblems.push(relative + ": missing title");
   if (!/<meta\s+name="description"\s+content="[^"]+"/i.test(html)) metadataProblems.push(relative + ": missing meta description");
   if (!/<meta\s+property="og:title"/i.test(html)) metadataProblems.push(relative + ": missing Open Graph title");
+
+  const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+  if (titleMatch) {
+    const titleValue = titleMatch[1].trim();
+    const existingTitle = metadataValues.titles.get(titleValue);
+    if (existingTitle) metadataProblems.push(relative + ": duplicate title shared with " + existingTitle);
+    else metadataValues.titles.set(titleValue, relative);
+  }
+  const descriptionMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+  if (descriptionMatch) {
+    const descriptionValue = descriptionMatch[1].trim();
+    const existingDescription = metadataValues.descriptions.get(descriptionValue);
+    if (existingDescription) metadataProblems.push(relative + ": duplicate meta description shared with " + existingDescription);
+    else metadataValues.descriptions.set(descriptionValue, relative);
+  }
 
   if (/COMING SOON|IN DEVELOPMENT/i.test(html)) placeholderPages.push(relative);
 
