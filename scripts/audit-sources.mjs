@@ -5,7 +5,7 @@ const files = {
   news: await readFile(new URL("../src/data/news.ts", import.meta.url), "utf8")
 };
 const problems = [];
-const urlPattern = /^https?:\/\/[\w.-]+(?:\/[^\s]*)?$/i;
+const urlPattern = /^https:\/\/[\w.-]+(?:\/[^\s]*)?$/i;
 
 function validateSourceBlock(block, label) {
   const title = block.match(/(?:title|sourceTitle):\s*"([^"]*)"/);
