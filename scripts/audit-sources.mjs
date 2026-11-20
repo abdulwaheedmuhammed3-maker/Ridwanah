@@ -15,7 +15,7 @@ function validateSourceBlock(block, label) {
   if (!title?.[1]?.trim()) problems.push(label + ": missing source title");
   if (!organisation?.[1]?.trim()) problems.push(label + ": missing source organisation");
   if (!date?.[1]?.trim()) problems.push(label + ": missing source date");
-  else if (!/^\d{1,2} [A-Za-z]+ \d{4}$/.test(date[1].trim())) problems.push(label + ": source date should use 'DD Month YYYY' format");
+  else if (!/^(?:\d{1,2} [A-Za-z]+ \d{4}|\d{4}|[^"]*accessed \d{1,2} [A-Za-z]+ \d{4})$/i.test(date[1].trim())) problems.push(label + ": source date should be a year, date, or dated-access note");
   if (!url?.[1]?.trim()) problems.push(label + ": missing source URL");
   else if (!urlPattern.test(url[1])) problems.push(label + ": malformed or non-HTTP(S) URL: " + url[1]);
   return url?.[1] ?? "";
