@@ -35,6 +35,8 @@ jobs:
         run: npm run audit
       - name: Audit health content source integrity
         run: npm run audit:sources
+      - name: Check Cloudflare deployment script syntax
+        run: node --check scripts/deploy-cloudflare-worker.mjs
       - name: Test preview IP access gate
         run: npm run test:worker-access
       - name: Validate Cloudflare deployment without credentials
