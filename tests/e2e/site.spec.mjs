@@ -500,3 +500,40 @@ test("every public route has named navigation landmarks", async ({ page }) => {
     expect(unnamedNavigation, `Navigation landmarks without accessible names on ${route}: ${JSON.stringify(unnamedNavigation)}`).toEqual([]);
   }
 });
+
+
+test("new discovery-first routes provide their intended entry points", async ({ page }) => {
+  await page.goto("/discover/");
+  await expect(page.getByRole("heading", { name: /Discover your next aha moment/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Public-health updates/i })).toBeVisible();
+
+  await page.goto("/my-health/");
+  await expect(page.getByRole("heading", { name: /Get to know yourself better/i })).toBeVisible();
+  await expect(page.getByText(/Cycle dates, symptoms, moods and reminders are not being collected or saved/i)).toBeVisible();
+  await expect(page.locator("input")).toHaveCount(0);
+});
+
+test("the Play quiz gives feedback and advances after an answer", async ({ page }) => {
+  await page.goto("/play/");
+  await page.getByRole("button", { name: /Check who published it and when/i }).click();
+  await expect(page.locator("#quiz-feedback")).toContainText(/Nice/);
+  await expect(page.locator("#quiz-next")).toBeVisible();
+  await page.locator("#quiz-next").click();
+  await expect(page.getByRole("heading", { name: /A health update includes a number/i })).toBeVisible();
+});
+
+test("Ask RIDWANAH searches current content without pretending to be AI", async ({ page }) => {
+  await page.goto("/ask/");
+  await expect(page.getByText(/AI conversation service is not connected yet/i)).toBeVisible();
+  await page.getByRole("searchbox", { name: /What would you like to understand/i }).fill("menstrual");
+  await expect(page.locator("[data-ask-result]:visible")).toHaveCount(1);
+  await expect(page.locator("[data-ask-result]:visible")).toContainText(/Menstrual health/i);
+});
+
+test("RIDWANAH Alert labels curated updates and original sources", async ({ page }) => {
+  await page.goto("/alert/");
+  await expect(page.getByRole("heading", { name: /RIDWANAH Alert/i })).toBeVisible();
+  await expect(page.getByText(/not real-time outbreak monitoring/i)).toBeVisible();
+  await expect(page.locator(".rw-alert-card")).toHaveCount(5);
+  await expect(page.locator(".rw-alert-card a[target=_blank]")).toHaveCount(5);
+});
