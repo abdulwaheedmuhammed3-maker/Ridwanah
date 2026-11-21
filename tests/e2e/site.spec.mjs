@@ -477,3 +477,20 @@ test("homepage navigation identifies the current page", async ({ page }) => {
   await expect(page.locator('.sidebar-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
   await expect(page.locator('.mobile-bottom-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
 });
+
+
+test("every public route has named navigation landmarks", async ({ page }) => {
+  for (const route of publicRoutes) {
+    await page.goto(route);
+    const unnamedNavigation = await page.locator("nav").evaluateAll((navs) => navs.map((nav) => {
+      const ariaLabel = nav.getAttribute("aria-label")?.trim() ?? "";
+      const ids = (nav.getAttribute("aria-labelledby") ?? "").split(/\\s+/).filter(Boolean);
+      const labelledBy = ids.length && ids.every((id) => document.getElementById(id)?.textContent?.trim())
+        ? ids.map((id) => document.getElementById(id)?.textContent?.trim() ?? "").join(" ")
+        : "";
+      const name = labelledBy || ariaLabel;
+      return name ? null : { markup: nav.outerHTML.slice(0, 180) };
+    }).filter(Boolean));
+    expect(unnamedNavigation, `Navigation landmarks without accessible names on ${route}: ${JSON.stringify(unnamedNavigation)}`).toEqual([]);
+  }
+});
