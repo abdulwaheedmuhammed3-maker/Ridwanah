@@ -494,3 +494,15 @@ test("every public route has named navigation landmarks", async ({ page }) => {
     expect(unnamedNavigation, `Navigation landmarks without accessible names on ${route}: ${JSON.stringify(unnamedNavigation)}`).toEqual([]);
   }
 });
+
+
+test("every public route has non-empty iframe titles", async ({ page }) => {
+  for (const route of publicRoutes) {
+    await page.goto(route);
+    const missingTitles = await page.locator("iframe").evaluateAll((frames) => frames.map((frame) => ({
+      src: frame.getAttribute("src") ?? "",
+      title: frame.getAttribute("title")?.trim() ?? ""
+    })).filter((frame) => !frame.title));
+    expect(missingTitles, "Iframes without non-empty titles on " + route + ": " + JSON.stringify(missingTitles)).toEqual([]);
+  }
+});
