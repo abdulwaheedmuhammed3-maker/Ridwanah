@@ -8,6 +8,7 @@ Ridwanah is a pre-rendered Astro site served by **Cloudflare Workers Static Asse
 - Static build directory: `dist/`
 - Asset binding: `ASSETS`
 - Preview URL: `https://ridwanah-preview.abdulwaheedmuhammed3-996.workers.dev`
+- Main `workers.dev` URL remains enabled; per-version Worker preview URLs are disabled
 
 The Worker code is in `worker/index.js`. It compares Cloudflare's `CF-Connecting-IP` header with the private `PREVIEW_ALLOWED_IP` secret and returns HTTP 403 for every other address. The assets are attached to the same Worker version and the asset routing setting uses `run_worker_first: true`, so HTML, CSS, JavaScript, images, fonts and other static files pass through the check.
 
@@ -34,7 +35,7 @@ Do not add a second IP or a comma-separated list. Do not commit either secret to
 4. Tick the `publish` confirmation.
 5. Start the workflow and wait for its verification step to pass.
 
-The workflow runs Astro checks, builds the site, audits generated pages and sources, and tests the Worker gate. It then computes Cloudflare's BLAKE3 asset manifest, uploads any missing assets, and attaches the Worker entrypoint, assets configuration and IP secret to one new Worker version. The script verifies that this version is on 100% traffic, has the `ASSETS` binding and the `PREVIEW_ALLOWED_IP` secret binding, and runs the Worker before static assets.
+The workflow runs Astro checks, builds the site, audits generated pages and sources, and tests the Worker gate. It then computes Cloudflare's BLAKE3 asset manifest, uploads any missing assets, and attaches the Worker entrypoint, assets configuration and IP secret to one new Worker version. The script disables per-version preview URLs while keeping the main `workers.dev` address enabled, then verifies that the deployed version is on 100% traffic, has the `ASSETS` binding and `PREVIEW_ALLOWED_IP` secret binding, and runs the Worker before static assets.
 
 If the workflow reports a missing secret, return to **Settings → Secrets and variables → Actions** and confirm the exact secret names above.
 
