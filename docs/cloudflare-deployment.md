@@ -2,43 +2,55 @@
 
 ## Hosting design
 
-Ridwanah is a pre-rendered Astro site served by **Cloudflare Workers Static Assets**. The preview Worker now runs an IP gate before serving any static asset.
+Ridwanah is a pre-rendered Astro site served by **Cloudflare Workers Static Assets**. The preview uses a small Worker entrypoint to check the requesting IP before any static file is served.
 
 - Worker name: `ridwanah-preview`
-- Static assets: retained from the existing deployed Worker version
+- Static build directory: `dist/`
 - Asset binding: `ASSETS`
-- HTML paths: automatic trailing-slash handling
-- Unknown paths: the generated `404.html` is served with HTTP 404
 - Preview URL: `https://ridwanah-preview.abdulwaheedmuhammed3-996.workers.dev`
 
-The Worker entrypoint is in `worker/index.js`. Cloudflare was updated using the Worker Script Upload API with `keep_assets: true`, so the existing static assets were retained while the Worker middleware was added. The assets configuration runs the Worker before every matching request.
+The Worker code is in `worker/index.js`. It compares Cloudflare's `CF-Connecting-IP` header with the private `PREVIEW_ALLOWED_IP` secret and returns HTTP 403 for every other address. The assets are attached to the same Worker version and the asset routing setting uses `run_worker_first: true`, so HTML, CSS, JavaScript, images, fonts and other static files pass through the check.
 
-## Finish the single-IP allowlist in the Cloudflare dashboard
+## Required GitHub Actions secrets
 
-The Worker intentionally fails closed until its private secret is configured. Until the secret exists, all visitors receive HTTP 403.
+Open the Ridwanah repository:
 
-1. Open **Workers & Pages** in the Cloudflare dashboard.
-2. Select `ridwanah-preview`.
-3. Open **Settings**.
-4. Find **Runtime variables and secrets**.
-5. Select **Add** and choose **Secret**.
-6. Enter this exact variable name: `PREVIEW_ALLOWED_IP`.
-7. Enter the one permitted IPv4 address supplied by the owner.
-8. Save and select **Deploy**.
+`Settings → Secrets and variables → Actions → New repository secret`
 
-Do not add any other IP address or a comma-separated list. The Worker compares Cloudflare's `CF-Connecting-IP` request header to this secret. A missing secret, missing client-IP header, or non-matching address receives HTTP 403 with `Cache-Control: no-store`.
+Create these two repository secrets:
 
-Once the secret is deployed, test the preview from the permitted network. A different network should be denied. An IP allowlist identifies a public network address, not a unique handset; devices sharing the same public egress IP may also pass. Mobile carrier IP addresses can change, which can lock the owner out until the secret is updated.
+| Secret name | Value |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` | A Cloudflare API token with permission to edit Workers scripts for this account |
+| `RIDWANAH_PREVIEW_ALLOWED_IP` | The one public IPv4 address that is allowed to access the preview |
 
-## Important deployment warning
+Do not add a second IP or a comma-separated list. Do not commit either secret to the repository. The Cloudflare account ID is configured in the workflow and is not a secret.
 
-**Do not run an assets-only upload such as `cf deploy ./dist` against this Worker while the IP gate is active.** An assets-only deployment replaces the Worker entrypoint and would remove the access check. The manual deployment workflow is intentionally disabled to prevent an accidental unguarded release.
+## Deploy the restricted preview
 
-Any future preview content deployment must upload the new static assets and preserve/reapply the Worker middleware in the same controlled release. Do not re-enable the assets-only workflow until that combined deployment path has been tested.
+1. Open the repository's **Actions** tab.
+2. Choose **Deploy RIDWANAH IP-restricted preview**.
+3. Choose **Run workflow** on the `main` branch.
+4. Tick the `publish` confirmation.
+5. Start the workflow and wait for its verification step to pass.
 
-The CI dry run validates the existing static-site build. The Worker access middleware has unit tests in `tests/worker-access.test.mjs` for:
+The workflow runs Astro checks, builds the site, audits generated pages and sources, and tests the Worker gate. It then computes Cloudflare's BLAKE3 asset manifest, uploads any missing assets, and attaches the Worker entrypoint, assets configuration and IP secret to one new Worker version. The script verifies that this version is on 100% traffic, has the `ASSETS` binding and the `PREVIEW_ALLOWED_IP` secret binding, and runs the Worker before static assets.
+
+If the workflow reports a missing secret, return to **Settings → Secrets and variables → Actions** and confirm the exact secret names above.
+
+## Updating the allowed IP
+
+If your public IP changes, replace the value in the `RIDWANAH_PREVIEW_ALLOWED_IP` GitHub Actions secret and run the deployment workflow again. Until a successful deployment finishes, the previous IP remains the only allowed address.
+
+An IP allowlist identifies a public network address, not a unique handset. Other devices sharing that same public egress IP may also pass. Mobile carrier IP addresses can change, so a change in your network may temporarily lock you out until you update the secret and redeploy.
+
+## Deployment safety
+
+Do not use an assets-only deployment such as `cf deploy ./dist` against this Worker. It would replace the Worker entrypoint and remove the access check. Use the guarded GitHub Actions workflow so the static assets and Worker middleware are uploaded as one version.
+
+The CI dry run validates the static Astro build, while `tests/worker-access.test.mjs` covers:
 - The configured IP being forwarded to static assets
-- An unapproved IP being denied before assets are fetched
+- A different IP being denied before assets are fetched
 - A missing Cloudflare client-IP header failing closed
 - A missing allowlist secret failing closed
 
@@ -52,4 +64,4 @@ At this stage:
 - The terms and privacy notice still require qualified legal review.
 - A physical Android phone and a real desktop browser still need final review on the deployed site.
 
-Treat the preview as a technical preview, not an announcement that Ridwanah is a medically reviewed service. Do not remove pending-review notices or disclaimers to make the site look more authoritative.
+Treat the preview as a technical preview, not an announcement that RIDWANAH is a medically reviewed service. Do not remove pending-review notices or disclaimers to make the site look more authoritative.
