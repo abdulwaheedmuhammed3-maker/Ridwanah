@@ -12,6 +12,10 @@ Ridwanah is a pre-rendered Astro site served by **Cloudflare Workers Static Asse
 
 The Worker code is in `worker/index.js`. It compares Cloudflare's `CF-Connecting-IP` header with the private `PREVIEW_ALLOWED_IP` secret and returns HTTP 403 for every other address. The assets are attached to the same Worker version and the asset routing setting uses `run_worker_first: true`, so HTML, CSS, JavaScript, images, fonts and other static files pass through the check.
 
+## Cloudflare build integration
+
+The existing Workers Builds trigger for this temporary security branch has been excluded from the branch filter. It used `npx cf previews deploy`, which fails because this static Astro project does not produce the `.cloudflare/output` directory that command expects. The guarded GitHub Actions deployment above is the release path for this change. No other Worker build trigger or branch filter was changed.
+
 ## Required GitHub Actions secrets
 
 Open the Ridwanah repository:
