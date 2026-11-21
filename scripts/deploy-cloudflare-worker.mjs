@@ -156,6 +156,7 @@ async function uploadAssetBuckets(session, byHash) {
 
     const response = await apiRequest("/workers/assets/upload?base64=true", {
       method: "POST",
+      headers: { Authorization: `Bearer ${session.jwt}` },
       body: form
     });
 
