@@ -1,0 +1,81 @@
+---
+import ExperienceLayout from "../../layouts/ExperienceLayout.astro";
+import { articles } from "../../data/articles";
+import { healthNews } from "../../data/news";
+
+const resources = [
+  ...articles.map((article) => ({
+    title: article.title,
+    description: article.description,
+    type: "Health guide",
+    href: "/health/" + article.slug + "/",
+    search: article.title + " " + article.description + " " + article.category + " " + article.takeaways.join(" ")
+  })),
+  ...healthNews.map((item) => ({
+    title: item.title,
+    description: item.summary,
+    type: "Public-health update · " + item.region,
+    href: "/alert/",
+    search: item.title + " " + item.summary + " " + item.topic + " " + item.region + " " + item.sourceName
+  }))
+];
+---
+<ExperienceLayout title="Ask RIDWANAH — RIDWANAH" description="Find source-linked health education in the RIDWANAH library. AI conversations are not connected in this preview." activeSection="ask">
+  <div class="rw-page">
+    <header class="rw-page-hero rw-page-hero-lilac rw-ask-hero">
+      <span class="rw-eyebrow rw-eyebrow-dark">QUESTIONS ARE ALWAYS WELCOME HERE</span>
+      <h1>Ask without<br /><em>the awkward.</em></h1>
+      <p>Health questions can feel personal. Start with clear information, kind language and no judgement.</p>
+      <span class="rw-ask-orbit" aria-hidden="true">?</span>
+    </header>
+
+    <section class="rw-ask-panel" aria-labelledby="ask-panel-title">
+      <div class="rw-ask-panel-top"><span class="rw-ai-mark" aria-hidden="true">✦</span><div><strong id="ask-panel-title">Ask RIDWANAH</strong><small>Health education space</small></div><span class="rw-preview-tag">AI PREVIEW</span></div>
+      <p class="rw-ask-note">The AI conversation service is not connected yet. This page does not send or save your questions. For now, search the current source-linked RIDWANAH library below.</p>
+      <form class="rw-ask-search" id="ask-search-form">
+        <label for="ask-search">What would you like to understand?</label>
+        <div><input id="ask-search" type="search" placeholder="Try handwashing, periods or nutrition" autocomplete="off" /><button class="rw-button rw-button-dark" type="submit">Find info <span aria-hidden="true">↗</span></button></div>
+      </form>
+      <div class="rw-ask-suggestions" aria-label="Suggested topics">
+        <a href="/health/handwashing-when-and-how/">Handwashing</a><a href="/health/menstrual-health-understanding-your-cycle/">Menstrual health</a><a href="/health/healthy-eating-everyday-basics/">Nutrition</a><a href="/health/physical-activity-for-adults/">Movement</a>
+      </div>
+    </section>
+
+    <section class="rw-content-section" aria-labelledby="ask-resources-title">
+      <div class="rw-section-heading"><div><span class="rw-eyebrow rw-eyebrow-dark">START WITH TRUSTED MATERIAL</span><h2 id="ask-resources-title">Useful things to read next.</h2><p id="ask-results-count" aria-live="polite">Showing {resources.length} resources</p></div></div>
+      <div class="rw-ask-results" id="ask-results">
+        {resources.map((resource) => (
+          <article class="rw-ask-result" data-ask-result data-search={resource.search.toLowerCase()}>
+            <span>{resource.type}</span><h3><a href={resource.href}>{resource.title}</a></h3><p>{resource.description}</p>
+          </article>
+        ))}
+      </div>
+      <p class="rw-ask-empty" id="ask-empty" hidden>No matching material in the current library. Try another phrase or browse Discover.</p>
+    </section>
+  </div>
+  <script>
+    const form = document.querySelector<HTMLFormElement>("#ask-search-form");
+    const input = document.querySelector<HTMLInputElement>("#ask-search");
+    const results = Array.from(document.querySelectorAll<HTMLElement>("[data-ask-result]"));
+    const count = document.querySelector<HTMLElement>("#ask-results-count");
+    const empty = document.querySelector<HTMLElement>("#ask-empty");
+
+    function filterResources() {
+      const term = (input?.value ?? "").trim().toLowerCase();
+      let visible = 0;
+      results.forEach((item) => {
+        const matches = (item.dataset.search ?? "").includes(term);
+        item.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      if (count) count.textContent = "Showing " + visible + " " + (visible === 1 ? "resource" : "resources");
+      if (empty) empty.hidden = visible !== 0;
+    }
+
+    form?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      filterResources();
+    });
+    input?.addEventListener("input", filterResources);
+  </script>
+</ExperienceLayout>
