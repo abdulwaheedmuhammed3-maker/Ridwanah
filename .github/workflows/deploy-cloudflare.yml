@@ -1,18 +1,65 @@
-name: Guarded preview deployment required
+name: Deploy RIDWANAH IP-restricted preview
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Confirm publishing the IP-restricted preview to the existing workers.dev URL"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
+concurrency:
+  group: ridwanah-restricted-preview-deploy
+  cancel-in-progress: false
+
 jobs:
-  prevent-unguarded-upload:
+  deploy:
+    if: ${{ inputs.publish == true }}
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - name: Stop an assets-only deployment
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.23.4
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Build static website
+        run: npm run build
+
+      - name: Audit generated pages and internal links
+        run: npm run audit
+
+      - name: Audit health content source integrity
+        run: npm run audit:sources
+
+      - name: Test IP gate behavior
+        run: npm run test:worker-access
+
+      - name: Verify deployment credentials and one-IP secret exist
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          RIDWANAH_PREVIEW_ALLOWED_IP: ${{ secrets.RIDWANAH_PREVIEW_ALLOWED_IP }}
         run: |
-          echo "::error::This deployment is disabled while the preview IP gate is active."
-          echo "An assets-only upload would replace the Worker middleware and expose the preview."
-          echo "Use the guarded Worker-and-assets deployment procedure documented in docs/cloudflare-deployment.md."
-          exit 1
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing CLOUDFLARE_API_TOKEN repository secret."; exit 1; }
+          test -n "$RIDWANAH_PREVIEW_ALLOWED_IP" || { echo "Missing RIDWANAH_PREVIEW_ALLOWED_IP repository secret."; exit 1; }
+
+      - name: Upload assets and IP-gated Worker as one version
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: "996f57ea551ad198f718dc42654c905d"
+          RIDWANAH_PREVIEW_ALLOWED_IP: ${{ secrets.RIDWANAH_PREVIEW_ALLOWED_IP }}
+        run: node scripts/deploy-cloudflare-worker.mjs
