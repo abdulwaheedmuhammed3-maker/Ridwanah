@@ -196,7 +196,20 @@ async function uploadWorker(completionJwt) {
   });
 }
 
+async function disableVersionPreviewUrls() {
+  await apiRequest(`/workers/scripts/${workerName}/subdomain`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ enabled: true, previews_enabled: false })
+  });
+}
+
 async function verifyDeployment() {
+  const subdomain = await apiRequest(`/workers/scripts/${workerName}/subdomain`);
+  if (subdomain.result?.enabled !== true || subdomain.result?.previews_enabled !== false) {
+    throw new Error("Post-deploy verification failed: workers.dev must stay enabled and version preview URLs must be disabled.");
+  }
+
   const deployments = await apiRequest(`/workers/scripts/${workerName}/deployments`);
   const latest = deployments.result?.deployments?.[0];
   const activeVersion = latest?.versions?.find((version) => version.percentage === 100);
@@ -242,6 +255,7 @@ async function main() {
 
   console.log("Uploading Worker middleware and static asset manifest as one version.");
   await uploadWorker(completionJwt);
+  await disableVersionPreviewUrls();
   await verifyDeployment();
 }
 
