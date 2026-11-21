@@ -10,8 +10,9 @@
     "check": "astro check",
     "audit": "node scripts/audit-build.mjs",
     "audit:sources": "node scripts/audit-sources.mjs",
+    "test:worker-access": "node --test tests/worker-access.test.mjs",
     "test:e2e": "playwright test",
-    "deploy:cloudflare": "npm run build && cf deploy ./dist",
+    "deploy:cloudflare": "npm run build && cf deploy ./dist --secrets-file .secrets",
     "cloudflare:dry-run": "cf deploy ./dist --dry-run"
   },
   "dependencies": {
