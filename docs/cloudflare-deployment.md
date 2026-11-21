@@ -2,79 +2,71 @@
 
 ## Hosting design
 
-Ridwanah is a pre-rendered Astro site. The deployment target is **Cloudflare Workers Static Assets**, deployed as an assets-only Worker. The project uses Cloudflare's `cf` CLI, not Wrangler.
+Ridwanah is a pre-rendered Astro site served by **Cloudflare Workers Static Assets**. The preview uses a small Worker entrypoint to check the requesting IP before any static file is served.
 
 - Worker name: `ridwanah-preview`
 - Static build directory: `dist/`
-- HTML paths: automatic trailing-slash handling
-- Unknown paths: the generated `404.html` is served with HTTP 404
-- Public preview address after deployment: `https://ridwanah-preview.abdulwaheedmuhammed3-996.workers.dev`
-- No custom domain is attached yet. A custom domain requires adding a domain/zone to the Cloudflare account and completing DNS configuration.
+- Asset binding: `ASSETS`
+- Preview URL: `https://ridwanah-preview.abdulwaheedmuhammed3-996.workers.dev`
+- Main `workers.dev` URL remains enabled; per-version Worker preview URLs are disabled
 
-The Cloudflare configuration is in `cloudflare.config.ts`. The CLI is pinned in `package.json` at `cf@1.0.0-rc.2`.
+The Worker code is in `worker/index.js`. It compares Cloudflare's `CF-Connecting-IP` header with the private `PREVIEW_ALLOWED_IP` secret and returns HTTP 403 for every other address. The assets are attached to the same Worker version and the asset routing setting uses `run_worker_first: true`, so HTML, CSS, JavaScript, images, fonts and other static files pass through the check.
 
-## GitHub Actions deployment
+## Cloudflare build integration
 
-The deployment workflow is deliberately manual. It does not deploy on every push.
+The existing Workers Builds trigger for this temporary security branch has been excluded from the branch filter. It used `npx cf previews deploy`, which fails because this static Astro project does not produce the `.cloudflare/output` directory that command expects. The guarded GitHub Actions deployment above is the release path for this change. No other Worker build trigger or branch filter was changed.
 
-### 1. Secure the Cloudflare account
-
-Enable two-factor authentication on the Cloudflare account before creating a production credential. Create a narrowly scoped API token for this account with **Workers Scripts: Edit** permission. Do not use a Global API Key and do not paste the token into a source file, issue, commit or chat.
-
-### 2. Add GitHub repository settings
+## Required GitHub Actions secrets
 
 Open the Ridwanah repository:
 
-`Settings → Secrets and variables → Actions`
+`Settings → Secrets and variables → Actions → New repository secret`
 
-Create this repository secret:
+Create these two repository secrets:
 
-| Name | Value |
+| Secret name | Value |
 | --- | --- |
-| `CLOUDFLARE_API_TOKEN` | The narrowly scoped Cloudflare API token |
+| `CLOUDFLARE_API_TOKEN` | A Cloudflare API token with permission to edit Workers scripts for this account |
+| `RIDWANAH_PREVIEW_ALLOWED_IP` | The one public IPv4 address that is allowed to access the preview |
 
-Create this repository variable:
+Do not add a second IP or a comma-separated list. Do not commit either secret to the repository. The Cloudflare account ID is configured in the workflow and is not a secret.
 
-| Name | Value |
-| --- | --- |
-| `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account ID for the account that owns the `workers.dev` subdomain |
+## Deploy the restricted preview
 
-The account ID is a variable, not a secret. The API token must remain a secret.
+1. Open the repository's **Actions** tab.
+2. Choose **Deploy RIDWANAH IP-restricted preview**.
+3. Choose **Run workflow** on the `main` branch.
+4. Tick the `publish` confirmation.
+5. Start the workflow and wait for its verification step to pass.
 
-### 3. Run a deployment intentionally
+The workflow runs Astro checks, builds the site, audits generated pages and sources, and tests the Worker gate. It then computes Cloudflare's BLAKE3 asset manifest, uploads any missing assets, and attaches the Worker entrypoint, assets configuration and IP secret to one new Worker version. The script disables per-version preview URLs while keeping the main `workers.dev` address enabled, then verifies that the deployed version is on 100% traffic, has the `ASSETS` binding and `PREVIEW_ALLOWED_IP` secret binding, and runs the Worker before static assets.
 
-1. Open the GitHub **Actions** tab.
-2. Select **Deploy Ridwanah preview to Cloudflare**.
-3. Select **Run workflow** on the `main` branch.
-4. Tick the `publish` confirmation input only when you intend to publish the current main build to the public `workers.dev` address.
-5. Start the workflow and wait for all steps to pass.
-6. Open the deployment URL and test the homepage, each public route, all navigation, search and filters, source links, video embeds and the not-found page.
+If the workflow reports a missing secret, return to **Settings → Secrets and variables → Actions** and confirm the exact secret names above.
 
-The workflow repeats the Astro/TypeScript check, static build and generated-site audit before it deploys. It uses the repository-pinned Cloudflare CLI.
+## Updating the allowed IP
+
+If your public IP changes, replace the value in the `RIDWANAH_PREVIEW_ALLOWED_IP` GitHub Actions secret and run the deployment workflow again. Until a successful deployment finishes, the previous IP remains the only allowed address.
+
+An IP allowlist identifies a public network address, not a unique handset. Other devices sharing that same public egress IP may also pass. Mobile carrier IP addresses can change, so a change in your network may temporarily lock you out until you update the secret and redeploy.
+
+## Deployment safety
+
+Do not use an assets-only deployment such as `cf deploy ./dist` against this Worker. It would replace the Worker entrypoint and remove the access check. Use the guarded GitHub Actions workflow so the static assets and Worker middleware are uploaded as one version.
+
+The CI dry run validates the static Astro build, while `tests/worker-access.test.mjs` covers:
+- The configured IP being forwarded to static assets
+- A different IP being denied before assets are fetched
+- A missing Cloudflare client-IP header failing closed
+- A missing allowlist secret failing closed
 
 ## Important release boundary
 
-A Cloudflare deployment makes the website reachable on a public internet address. It does **not** mean the content has received clinical or legal approval.
+A Cloudflare deployment does **not** mean the health content has received clinical or legal approval.
 
 At this stage:
-- All four health guides remain marked **medical review pending**.
+- Health guides may still be marked **medical review pending**.
 - The news archive is a manually curated snapshot, not a live health alert service.
 - The terms and privacy notice still require qualified legal review.
 - A physical Android phone and a real desktop browser still need final review on the deployed site.
-- The custom domain, canonical URL and sitemap still need to be configured after the domain is selected.
 
-Treat the first deployment as a technical preview, not an announcement that Ridwanah is a medically reviewed service. Do not remove the pending-review notices or disclaimers to make the site look more authoritative.
-
-## Local deployment
-
-With Node.js installed and a Cloudflare API token available in your shell environment:
-
-```bash
-npm install
-npm run check
-npm run build
-npm run audit
-npm run deploy:cloudflare
-```
-
-The deploy script builds the static site and then runs `cf deploy ./dist`. The CLI uses `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` from the environment. Never commit either value.
+Treat the preview as a technical preview, not an announcement that RIDWANAH is a medically reviewed service. Do not remove pending-review notices or disclaimers to make the site look more authoritative.
