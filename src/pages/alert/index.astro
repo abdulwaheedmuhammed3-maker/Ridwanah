@@ -1,0 +1,38 @@
+---
+import ExperienceLayout from "../../layouts/ExperienceLayout.astro";
+import { healthNews } from "../../data/news";
+
+function sourceDateTime(value: string) {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+}
+---
+<ExperienceLayout title="RIDWANAH Alert — Health updates" description="Read curated, source-linked public-health updates from Nigeria, Africa and around the world. This is not a live emergency alert service." activeSection="alert">
+  <div class="rw-page">
+    <header class="rw-page-hero rw-page-hero-orange rw-alert-hero">
+      <span class="rw-eyebrow rw-eyebrow-dark">STAY AWARE. STAY GROUNDED.</span>
+      <h1>RIDWANAH<br /><em>Alert.</em></h1>
+      <p>Important health information, with the source, date and context beside it. No panic. No rumours. Just updates you can check.</p>
+      <span class="rw-hero-stamp">SOURCE FIRST. ALWAYS.</span>
+    </header>
+
+    <section class="rw-alert-disclosure" aria-labelledby="alert-disclosure-title">
+      <span aria-hidden="true">i</span><div><strong id="alert-disclosure-title">Know what this feed is.</strong><p>These are curated summaries of published public-health updates, not real-time outbreak monitoring, emergency instructions or push alerts. Check the original source for current guidance.</p></div>
+    </section>
+
+    <section class="rw-content-section" aria-labelledby="alert-feed-title">
+      <div class="rw-section-heading"><div><span class="rw-eyebrow rw-eyebrow-dark">SOURCE-LINKED UPDATES</span><h2 id="alert-feed-title">The picture, with context.</h2><p>{healthNews.length} published updates in the current archive.</p></div><a class="rw-text-link" href="/news">Open full news archive ↗</a></div>
+      <div class="rw-alert-feed">
+        {healthNews.map((item) => (
+          <article class="rw-alert-card">
+            <div class="rw-alert-card-top"><span class="rw-update-region">{item.region} · {item.topic}</span><time datetime={sourceDateTime(item.sourceDate)}>{item.sourceDate}</time></div>
+            <h3>{item.title}</h3>
+            <p>{item.summary}</p>
+            {item.contextDate && <p class="rw-context-date">{item.contextDate}</p>}
+            <div class="rw-alert-source"><span><strong>{item.sourceName}</strong><small>{item.sourceType} · Published {item.sourceDate}</small></span><a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">Check original ↗</a></div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</ExperienceLayout>

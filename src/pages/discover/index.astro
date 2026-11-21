@@ -1,0 +1,48 @@
+---
+import ExperienceLayout from "../../layouts/ExperienceLayout.astro";
+import { articles } from "../../data/articles";
+import { learningVideos } from "../../data/videos";
+import { healthNews } from "../../data/news";
+---
+<ExperienceLayout title="Discover — RIDWANAH" description="Explore source-linked health stories, videos and everyday learning from RIDWANAH." activeSection="discover">
+  <div class="rw-page">
+    <header class="rw-page-hero rw-page-hero-lilac">
+      <span class="rw-eyebrow rw-eyebrow-dark">YOUR CURIOSITY LOOKS GOOD ON YOU</span>
+      <h1>Discover your<br /><em>next aha moment.</em></h1>
+      <p>Scroll through useful health knowledge, watch a quick lesson or open a topic you want to understand better.</p>
+      <div class="rw-topic-pills" aria-label="Explore categories">
+        <a href="/health">Health guides</a><a href="/watch">Videos</a><a href="/alert">Public-health updates</a><a href="/play">Quizzes</a>
+      </div>
+    </header>
+
+    <section class="rw-content-section" aria-labelledby="discover-guides">
+      <div class="rw-section-heading"><div><span class="rw-eyebrow rw-eyebrow-dark">READ WHEN YOU'RE READY</span><h2 id="discover-guides">Guides that get to the point.</h2><p>Our current guides are educational drafts; each shows its review status and supporting sources.</p></div><a class="rw-text-link" href="/health">Open library ↗</a></div>
+      <div class="rw-discover-grid">
+        {articles.map((article, index) => (
+          <article class="rw-discover-card">
+            <div class:list={["rw-discover-art", "rw-discover-art-" + (index % 3)]}><span>{article.categoryLabel}</span><strong>{index === 0 ? "CLEAN" : index === 1 ? "MOVE" : index === 2 ? "EAT" : "BODY"}</strong><i aria-hidden="true">{index === 0 ? "✳" : index === 1 ? "↗" : index === 2 ? "◒" : "♡"}</i></div>
+            <div class="rw-discover-card-copy"><div class="rw-story-meta"><span>{article.category}</span><span>{article.readTime}</span></div><h3><a href={"/health/" + article.slug + "/"}>{article.title}</a></h3><p>{article.description}</p><span class="rw-review-note">Medical review pending</span></div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="rw-content-section" aria-labelledby="discover-watch">
+      <div class="rw-section-heading"><div><span class="rw-eyebrow rw-eyebrow-dark">WATCH & LEARN</span><h2 id="discover-watch">Press play on something useful.</h2></div><a class="rw-text-link" href="/watch">Video library ↗</a></div>
+      <div class="rw-resource-list">
+        {learningVideos.map((video) => (
+          <a class="rw-resource-row" href="/watch"><span class="rw-resource-icon" aria-hidden="true">▷</span><span><strong>{video.title}</strong><small>{video.publisher} · {video.publishedAt}</small></span><span class="rw-resource-arrow" aria-hidden="true">↗</span></a>
+        ))}
+      </div>
+    </section>
+
+    <section class="rw-content-section" aria-labelledby="discover-updates">
+      <div class="rw-section-heading"><div><span class="rw-eyebrow rw-eyebrow-dark">BE A LITTLE MORE IN THE KNOW</span><h2 id="discover-updates">Public-health updates.</h2><p>Curated source updates, not live alerts.</p></div><a class="rw-text-link" href="/alert">Visit RIDWANAH Alert ↗</a></div>
+      <div class="rw-update-grid">
+        {healthNews.slice(0, 3).map((item) => (
+          <article class="rw-update-card"><span class="rw-update-region">{item.region} · {item.topic}</span><h3>{item.title}</h3><p>{item.summary}</p><small>{item.sourceName} · {item.sourceDate}</small><a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">Original source ↗</a></article>
+        ))}
+      </div>
+    </section>
+  </div>
+</ExperienceLayout>

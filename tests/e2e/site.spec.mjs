@@ -7,6 +7,11 @@ const publicRoutes = [
   "/health/physical-activity-for-adults/",
   "/health/healthy-eating-everyday-basics/",
   "/health/menstrual-health-understanding-your-cycle/",
+  "/discover/",
+  "/play/",
+  "/ask/",
+  "/my-health/",
+  "/alert/",
   "/news/",
   "/watch/",
   "/prevention/",
@@ -55,9 +60,10 @@ test("navigation adapts to desktop, tablet and Android-sized viewports", async (
   } else {
     await expect(sidebar).toBeHidden();
     await expect(mobileNavigation).toBeVisible();
-    await expect(mobileNavigation.getByRole("link", { name: /Learn/ })).toBeVisible();
-    await expect(mobileNavigation.getByRole("link", { name: /News/ })).toBeVisible();
-    await expect(mobileNavigation.getByRole("link", { name: /Watch/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /Discover/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /Play/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /Ask/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /My Health/ })).toBeVisible();
   }
 });
 
@@ -347,31 +353,31 @@ test("health library and news search fields show a visible focus indicator", asy
   await expect(newsWrap).toHaveCSS("outline-offset", "3px");
 });
 
-test("current page is identified semantically in primary navigation", async ({ page }, testInfo) => {
+test("current page is identified semantically in primary navigation", async ({ page }) => {
   const cases = [
-    { route: "/health/", desktop: "/health", mobile: "/health" },
-    { route: "/news/", desktop: "/news", mobile: "/news" },
-    { route: "/watch/", desktop: "/watch", mobile: "/watch" },
-    { route: "/about/", desktop: "/about", mobile: "/about" },
-    { route: "/prevention/", desktop: "/prevention" },
-    { route: "/awareness/", desktop: "/awareness" },
+    { route: "/discover/", desktop: "/discover", mobile: "/discover", mobileCurrent: "page" },
+    { route: "/play/", desktop: "/play", mobile: "/play", mobileCurrent: "page" },
+    { route: "/ask/", desktop: "/ask", mobile: "/ask", mobileCurrent: "page" },
+    { route: "/my-health/", desktop: "/my-health", mobile: "/my-health", mobileCurrent: "page" },
+    { route: "/alert/", desktop: "/alert", mobile: "/discover", mobileCurrent: "location" },
+    { route: "/health/", desktop: "/health", mobile: "/discover", mobileCurrent: "location" },
+    { route: "/news/", desktop: "/news", mobile: "/discover", mobileCurrent: "location" },
+    { route: "/watch/", desktop: "/watch", mobile: "/discover", mobileCurrent: "location" },
+    { route: "/about/", desktop: "/about" },
+    { route: "/prevention/", desktop: "/prevention", mobile: "/discover", mobileCurrent: "location" },
+    { route: "/awareness/", desktop: "/awareness", mobile: "/discover", mobileCurrent: "location" },
     { route: "/editorial-policy/", desktop: "/editorial-policy" }
   ];
 
   for (const item of cases) {
     await page.goto(item.route);
-    const desktopCurrent = page.locator(`.sidebar-nav a[href="${item.desktop}"]`);
+    const desktopCurrent = page.locator('.sidebar-nav a[href="' + item.desktop + '"]');
     await expect(desktopCurrent).toHaveAttribute("aria-current", "page");
     await expect(desktopCurrent).toHaveClass(/active/);
 
-    if (item.mobile && testInfo.project.name !== "desktop-chromium") {
-      const mobileCurrent = page.locator(`.mobile-bottom-nav a[href="${item.mobile}"]`);
-      await expect(mobileCurrent).toHaveAttribute("aria-current", "page");
-      await expect(mobileCurrent).toHaveClass(/selected/);
-    } else if (item.mobile) {
-      // The mobile navigation remains in the DOM at desktop sizes; verify its page semantics too.
-      const mobileCurrent = page.locator(`.mobile-bottom-nav a[href="${item.mobile}"]`);
-      await expect(mobileCurrent).toHaveAttribute("aria-current", "page");
+    if (item.mobile) {
+      const mobileCurrent = page.locator('.mobile-bottom-nav a[href="' + item.mobile + '"]');
+      await expect(mobileCurrent).toHaveAttribute("aria-current", item.mobileCurrent ?? "page");
       await expect(mobileCurrent).toHaveClass(/selected/);
     }
   }
@@ -474,8 +480,8 @@ test("robots.txt permits public crawling without requiring an unconfigured sitem
 
 test("homepage navigation identifies the current page", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator('.sidebar-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
-  await expect(page.locator('.mobile-bottom-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
+  await expect(page.locator('.sidebar-nav a[href="/"]')).toHaveAttribute("aria-current", "page");
+  await expect(page.locator('.mobile-bottom-nav a[href="/"]')).toHaveAttribute("aria-current", "page");
 });
 
 
@@ -493,4 +499,41 @@ test("every public route has named navigation landmarks", async ({ page }) => {
     }).filter(Boolean));
     expect(unnamedNavigation, `Navigation landmarks without accessible names on ${route}: ${JSON.stringify(unnamedNavigation)}`).toEqual([]);
   }
+});
+
+
+test("new discovery-first routes provide their intended entry points", async ({ page }) => {
+  await page.goto("/discover/");
+  await expect(page.getByRole("heading", { name: /Discover your next aha moment/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Public-health updates/i })).toBeVisible();
+
+  await page.goto("/my-health/");
+  await expect(page.getByRole("heading", { name: /Get to know yourself better/i })).toBeVisible();
+  await expect(page.getByText(/Cycle dates, symptoms, moods and reminders are not being collected or saved/i)).toBeVisible();
+  await expect(page.locator("input")).toHaveCount(0);
+});
+
+test("the Play quiz gives feedback and advances after an answer", async ({ page }) => {
+  await page.goto("/play/");
+  await page.getByRole("button", { name: /Check who published it and when/i }).click();
+  await expect(page.locator("#quiz-feedback")).toContainText(/Nice/);
+  await expect(page.locator("#quiz-next")).toBeVisible();
+  await page.locator("#quiz-next").click();
+  await expect(page.getByRole("heading", { name: /A health update includes a number/i })).toBeVisible();
+});
+
+test("Ask RIDWANAH searches current content without pretending to be AI", async ({ page }) => {
+  await page.goto("/ask/");
+  await expect(page.getByText(/AI conversation service is not connected yet/i)).toBeVisible();
+  await page.getByRole("searchbox", { name: /What would you like to understand/i }).fill("menstrual");
+  await expect(page.locator("[data-ask-result]:visible")).toHaveCount(1);
+  await expect(page.locator("[data-ask-result]:visible")).toContainText(/Menstrual health/i);
+});
+
+test("RIDWANAH Alert labels curated updates and original sources", async ({ page }) => {
+  await page.goto("/alert/");
+  await expect(page.getByRole("heading", { name: /RIDWANAH Alert/i })).toBeVisible();
+  await expect(page.getByText(/not real-time outbreak monitoring/i)).toBeVisible();
+  await expect(page.locator(".rw-alert-card")).toHaveCount(5);
+  await expect(page.locator(".rw-alert-card a[target=_blank]")).toHaveCount(5);
 });
