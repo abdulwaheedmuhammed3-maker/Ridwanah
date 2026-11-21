@@ -166,29 +166,7 @@ async function uploadAssetBuckets(session, byHash) {
 }
 
 async function uploadWorker(completionJwt) {
-  const workerCode = `const forbiddenResponse = () =>
-  new Response("Forbidden", {
-    status: 403,
-    headers: {
-      "Cache-Control": "no-store",
-      "Content-Type": "text/plain; charset=utf-8"
-    }
-  });
-
-export default {
-  async fetch(request, env) {
-    const allowedIp = env.PREVIEW_ALLOWED_IP?.trim();
-    const connectingIp = request.headers.get("CF-Connecting-IP");
-
-    // Fail closed if the secret or Cloudflare's client-IP header is missing.
-    if (!allowedIp || !connectingIp || connectingIp !== allowedIp) {
-      return forbiddenResponse();
-    }
-
-    // The Worker is invoked first for all requests, before this asset fetch.
-    return env.ASSETS.fetch(request);
-  }
-};`;
+  const workerCode = await readFile(path.join(root, "worker", "index.js"), "utf8");
 
   const metadata = {
     main_module: "worker.js",
