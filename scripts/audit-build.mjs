@@ -78,6 +78,10 @@ for (const htmlFile of htmlFiles) {
   if (!/<title>[^<]+<\/title>/i.test(html)) metadataProblems.push(relative + ": missing title");
   if (!/<meta\s+name="description"\s+content="[^"]+"/i.test(html)) metadataProblems.push(relative + ": missing meta description");
   if (!/<meta\s+property="og:title"/i.test(html)) metadataProblems.push(relative + ": missing Open Graph title");
+  if (!/<meta\s+property="og:description"\s+content="[^"]+"/i.test(html)) metadataProblems.push(relative + ": missing Open Graph description");
+  if (!/<meta\s+name="twitter:card"\s+content="(?:summary|summary_large_image)"/i.test(html)) metadataProblems.push(relative + ": missing or invalid Twitter card type");
+  if (!/<meta\s+name="twitter:title"\s+content="[^"]+"/i.test(html)) metadataProblems.push(relative + ": missing Twitter title");
+  if (!/<meta\s+name="twitter:description"\s+content="[^"]+"/i.test(html)) metadataProblems.push(relative + ": missing Twitter description");
 
   const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
   if (titleMatch) {
