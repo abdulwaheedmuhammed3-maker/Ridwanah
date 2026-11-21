@@ -548,3 +548,27 @@ test("every public route has non-empty iframe titles", async ({ page }) => {
     expect(missingTitles, "Iframes without non-empty titles on " + route + ": " + JSON.stringify(missingTitles)).toEqual([]);
   }
 });
+
+
+test("every public route has accessible names for visible links", async ({ page }) => {
+  for (const route of publicRoutes) {
+    await page.goto(route);
+    const unnamedLinks = await page.locator("a[href]").evaluateAll((links) => links.map((link) => {
+      const visible = link.getClientRects().length > 0 && getComputedStyle(link).visibility !== "hidden" && getComputedStyle(link).display !== "none";
+      if (!visible) return null;
+      const ariaLabel = link.getAttribute("aria-label")?.trim() ?? "";
+      const labelledBy = (link.getAttribute("aria-labelledby") ?? "").split(/\\s+/)
+        .map((id) => document.getElementById(id)?.textContent?.trim() ?? "")
+        .filter(Boolean).join(" ");
+      const clone = link.cloneNode(true);
+      clone.querySelectorAll('[aria-hidden="true"], [hidden]').forEach((element) => element.remove());
+      const text = clone.textContent?.replace(/\\s+/g, " ").trim() ?? "";
+      const imageAlt = Array.from(link.querySelectorAll("img")).map((image) => image.getAttribute("alt")?.trim() ?? "").filter(Boolean).join(" ");
+      const svgTitle = Array.from(link.querySelectorAll("svg title")).map((title) => title.textContent?.trim() ?? "").filter(Boolean).join(" ");
+      const title = link.getAttribute("title")?.trim() ?? "";
+      const name = ariaLabel || labelledBy || text || imageAlt || svgTitle || title;
+      return name ? null : { href: link.getAttribute("href"), markup: link.outerHTML.slice(0, 180) };
+    }).filter(Boolean));
+    expect(unnamedLinks, `Visible links without an accessible-name signal on ${route}: ${JSON.stringify(unnamedLinks)}`).toEqual([]);
+  }
+});
