@@ -398,3 +398,38 @@ test("every public route has accessible names for links", async ({ page }) => {
     expect(unnamedLinks, `Links without an accessible-name signal on ${route}: ${JSON.stringify(unnamedLinks)}`).toEqual([]);
   }
 });
+
+
+test("health library and video filters announce selected state and reset it", async ({ page }) => {
+  await page.goto("/health/");
+  const allTopics = page.getByRole("button", { name: "All topics", exact: true });
+  const wellbeing = page.getByRole("button", { name: "Wellbeing", exact: true });
+  await expect(allTopics).toHaveAttribute("aria-pressed", "true");
+  await expect(wellbeing).toHaveAttribute("aria-pressed", "false");
+
+  await wellbeing.click();
+  await expect(wellbeing).toHaveAttribute("aria-pressed", "true");
+  await expect(allTopics).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("[data-article-card]:visible")).toHaveCount(1);
+
+  await page.getByRole("button", { name: "Clear search and filters" }).click();
+  await expect(allTopics).toHaveAttribute("aria-pressed", "true");
+  await expect(wellbeing).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("[data-article-card]:visible")).toHaveCount(4);
+
+  await page.goto("/watch/");
+  const allVideos = page.getByRole("button", { name: "All videos", exact: true });
+  const infectionPrevention = page.getByRole("button", { name: "Infection prevention", exact: true });
+  await expect(allVideos).toHaveAttribute("aria-pressed", "true");
+  await expect(infectionPrevention).toHaveAttribute("aria-pressed", "false");
+
+  await infectionPrevention.click();
+  await expect(infectionPrevention).toHaveAttribute("aria-pressed", "true");
+  await expect(allVideos).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("[data-video-card]:visible")).toHaveCount(1);
+
+  await page.getByRole("button", { name: "Show all videos" }).click();
+  await expect(allVideos).toHaveAttribute("aria-pressed", "true");
+  await expect(infectionPrevention).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("[data-video-card]:visible")).toHaveCount(2);
+});
