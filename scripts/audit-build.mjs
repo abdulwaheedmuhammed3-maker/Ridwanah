@@ -125,6 +125,16 @@ for (const htmlFile of htmlFiles) {
   if (!/<html[^>]+lang="en"/i.test(html)) accessibilityProblems.push(relative + ": missing document language");
   if (!/<main\b/i.test(html)) accessibilityProblems.push(relative + ": missing main landmark");
   if (!/<a\b[^>]*class="skip-link"/i.test(html)) accessibilityProblems.push(relative + ": missing skip link");
+  const pageIds = new Set([...html.matchAll(/\\bid="([^"]+)"/gi)].map((match) => match[1]));
+  for (const nav of html.matchAll(/<nav\\b[^>]*>/gi)) {
+    const navTag = nav[0];
+    const ariaLabel = navTag.match(/\\baria-label\\s*=\\s*["']([^"']*)["']/i)?.[1]?.trim() ?? "";
+    const labelledBy = navTag.match(/\\baria-labelledby\\s*=\\s*["']([^"']*)["']/i)?.[1]?.trim() ?? "";
+    const labelledByIds = labelledBy ? labelledBy.split(/\\s+/) : [];
+    if (!ariaLabel && (!labelledByIds.length || labelledByIds.some((id) => !pageIds.has(id)))) {
+      accessibilityProblems.push(relative + ": navigation landmark without an accessible name");
+    }
+  }
   const h1Count = [...html.matchAll(/<h1\b/gi)].length;
   if (h1Count !== 1) accessibilityProblems.push(relative + ": expected one primary h1, found " + h1Count);
   for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
