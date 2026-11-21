@@ -226,6 +226,10 @@ async function main() {
   required(accountId, "CLOUDFLARE_ACCOUNT_ID");
   required(apiToken, "CLOUDFLARE_API_TOKEN");
   required(allowedIp, "RIDWANAH_PREVIEW_ALLOWED_IP");
+  const ipv4Pattern = /^(?:(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)$/;
+  if (!ipv4Pattern.test(allowedIp)) {
+    throw new Error("RIDWANAH_PREVIEW_ALLOWED_IP must contain exactly one valid IPv4 address.");
+  }
 
   const files = await listFiles(assetDirectory);
   if (files.length === 0) throw new Error("dist/ is empty; refusing to upload an empty site.");
