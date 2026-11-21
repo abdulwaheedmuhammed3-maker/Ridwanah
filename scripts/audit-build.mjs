@@ -103,6 +103,7 @@ for (const htmlFile of htmlFiles) {
   }
   for (const anchor of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/gi)) {
     if (!/\brel="[^"]*noopener/i.test(anchor[0])) accessibilityProblems.push(relative + ": external new-tab link missing noopener");
+    if (!/\brel="[^"]*noreferrer/i.test(anchor[0])) accessibilityProblems.push(relative + ": external new-tab link missing noreferrer");
   }
 
   for (const match of html.matchAll(/\bhref="([^"]+)"/g)) {
