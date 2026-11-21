@@ -484,7 +484,7 @@ test("every public route has named navigation landmarks", async ({ page }) => {
     await page.goto(route);
     const unnamedNavigation = await page.locator("nav").evaluateAll((navs) => navs.map((nav) => {
       const ariaLabel = nav.getAttribute("aria-label")?.trim() ?? "";
-      const ids = (nav.getAttribute("aria-labelledby") ?? "").split(/\\s+/).filter(Boolean);
+      const ids = (nav.getAttribute("aria-labelledby") ?? "").split(/\s+/).filter(Boolean);
       const labelledBy = ids.length && ids.every((id) => document.getElementById(id)?.textContent?.trim())
         ? ids.map((id) => document.getElementById(id)?.textContent?.trim() ?? "").join(" ")
         : "";
