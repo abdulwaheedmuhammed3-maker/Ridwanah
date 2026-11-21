@@ -5,6 +5,12 @@ import "../../styles/section-pages.css";
 import "../../styles/readability.css";
 
 const categories = ["All videos", "Hand hygiene", "Infection prevention"];
+
+function sourceDateTime(value: string) {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+}
+
 ---
 <LibraryLayout activeSection="watch" title="Watch & Learn — Ridwanah" description="Watch selected public-health videos from trusted organisations, with clear source attribution.">
   <div id="top" class="resource-page">
@@ -39,7 +45,7 @@ const categories = ["All videos", "Hand hygiene", "Infection prevention"];
             ></iframe>
           </div>
           <div class="video-card-content">
-            <div class="video-card-meta"><span>{video.category}</span><time>{video.publishedAt}</time></div>
+            <div class="video-card-meta"><span>{video.category}</span><time datetime={sourceDateTime(video.publishedAt)}>{video.publishedAt}</time></div>
             <h2>{video.title}</h2>
             <p>{video.summary}</p>
             <div class="video-card-footer"><strong>{video.publisher}</strong><a href={video.sourceUrl} target="_blank" rel="noopener noreferrer">Open on YouTube <span aria-hidden="true">↗</span></a></div>
