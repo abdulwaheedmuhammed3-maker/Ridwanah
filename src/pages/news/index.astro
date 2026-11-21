@@ -5,6 +5,11 @@ import "../../styles/news.css";
 import "../../styles/readability.css";
 
 const regions = ["All updates", "Nigeria", "Africa", "Global"];
+
+function sourceDateTime(value: string) {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+}
 ---
 
 <LibraryLayout activeSection="news" title="Health News — Ridwanah" description="Understand selected public-health updates from Nigeria, Africa and around the world, with links to the original sources.">
@@ -52,7 +57,7 @@ const regions = ["All updates", "Nigeria", "Africa", "Global"];
             <span class="news-card-art-index">0{index + 1}</span>
           </div>
           <div class="news-card-content">
-            <div class="news-card-meta"><span>{item.topic}</span><time>{item.sourceDate}</time></div>
+            <div class="news-card-meta"><span>{item.topic}</span><time datetime={sourceDateTime(item.sourceDate)}>{item.sourceDate}</time></div>
             <h2>{item.title}</h2>
             <p>{item.summary}</p>
             {item.contextDate && <p class="news-context-date">{item.contextDate}</p>}
