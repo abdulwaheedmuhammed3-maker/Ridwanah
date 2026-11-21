@@ -40,13 +40,13 @@ if (!await exists(path.join(dist, "robots.txt"))) missingRoutes.push("robots.txt
 const robotsPath = path.join(dist, "robots.txt");
 if (await exists(robotsPath)) {
   const robotsContent = await readFile(robotsPath, "utf8");
-  if (!/^User-agent:\\s*\\*\\s*$/mi.test(robotsContent)) {
+  if (!/^User-agent:\s*\*\s*$/mi.test(robotsContent)) {
     missingRoutes.push("robots.txt missing a global User-agent: * rule");
   }
-  if (!/^Allow:\\s*\\/\\s*$/mi.test(robotsContent)) {
+  if (!/^Allow:\s*\/\s*$/mi.test(robotsContent)) {
     missingRoutes.push("robots.txt missing an Allow: / crawl directive");
   }
-  if (/^Disallow:\\s*\\/\\s*$/mi.test(robotsContent)) {
+  if (/^Disallow:\s*\/\s*$/mi.test(robotsContent)) {
     missingRoutes.push("robots.txt blocks crawling of the entire site");
   }
 }
