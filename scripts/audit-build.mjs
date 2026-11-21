@@ -147,7 +147,8 @@ for (const htmlFile of htmlFiles) {
     }
   }
   for (const frame of html.matchAll(/<iframe\b[^>]*>/gi)) {
-    if (!/\btitle="/i.test(frame[0])) accessibilityProblems.push(relative + ": iframe without title");
+    const titleMatch = frame[0].match(/\btitle\s*=\s*["']([^"']*)["']/i);
+    if (!titleMatch || !titleMatch[1].trim()) accessibilityProblems.push(relative + ": iframe without a non-empty title");
   }
   for (const anchor of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/gi)) {
     if (!/\brel="[^"]*noopener/i.test(anchor[0])) accessibilityProblems.push(relative + ": external new-tab link missing noopener");
