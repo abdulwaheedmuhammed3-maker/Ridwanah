@@ -204,11 +204,7 @@ export default {
     bindings: [
       { type: "assets", name: "ASSETS" },
       { type: "secret_text", name: "PREVIEW_ALLOWED_IP", text: allowedIp }
-    ],
-    annotations: {
-      "workers/message": "RIDWANAH preview restricted to one approved IP",
-      "workers/tag": "ridwanah-single-ip-preview"
-    }
+    ]
   };
 
   const form = new FormData();
