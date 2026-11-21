@@ -412,7 +412,9 @@ test("health library and video filters announce selected state and reset it", as
   await expect(allTopics).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("[data-article-card]:visible")).toHaveCount(1);
 
-  await page.getByRole("button", { name: "Clear search and filters" }).click();
+  // Reset the topic selection directly; the empty-state clear button is only
+  // rendered when no cards match, so it is not available for this filter.
+  await allTopics.click();
   await expect(allTopics).toHaveAttribute("aria-pressed", "true");
   await expect(wellbeing).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("[data-article-card]:visible")).toHaveCount(4);
@@ -428,7 +430,9 @@ test("health library and video filters announce selected state and reset it", as
   await expect(allVideos).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("[data-video-card]:visible")).toHaveCount(1);
 
-  await page.getByRole("button", { name: "Show all videos" }).click();
+  // Reset by selecting the default filter; the empty-state button is only
+  // present when a category yields zero videos.
+  await allVideos.click();
   await expect(allVideos).toHaveAttribute("aria-pressed", "true");
   await expect(infectionPrevention).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("[data-video-card]:visible")).toHaveCount(2);
