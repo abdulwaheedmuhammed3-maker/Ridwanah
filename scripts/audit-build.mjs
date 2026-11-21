@@ -8,6 +8,7 @@ const requiredRoutes = [
   "/health/physical-activity-for-adults/",
   "/health/healthy-eating-everyday-basics/",
   "/health/menstrual-health-understanding-your-cycle/",
+  "/discover/", "/play/", "/ask/", "/my-health/", "/alert/",
   "/news/", "/watch/", "/prevention/", "/awareness/",
   "/about/", "/editorial-policy/", "/privacy/", "/disclaimer/", "/terms/"
 ];

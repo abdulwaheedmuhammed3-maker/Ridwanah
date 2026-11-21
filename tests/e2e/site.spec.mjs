@@ -7,6 +7,11 @@ const publicRoutes = [
   "/health/physical-activity-for-adults/",
   "/health/healthy-eating-everyday-basics/",
   "/health/menstrual-health-understanding-your-cycle/",
+  "/discover/",
+  "/play/",
+  "/ask/",
+  "/my-health/",
+  "/alert/",
   "/news/",
   "/watch/",
   "/prevention/",
@@ -55,9 +60,10 @@ test("navigation adapts to desktop, tablet and Android-sized viewports", async (
   } else {
     await expect(sidebar).toBeHidden();
     await expect(mobileNavigation).toBeVisible();
-    await expect(mobileNavigation.getByRole("link", { name: /Learn/ })).toBeVisible();
-    await expect(mobileNavigation.getByRole("link", { name: /News/ })).toBeVisible();
-    await expect(mobileNavigation.getByRole("link", { name: /Watch/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /Discover/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /Play/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /Ask/ })).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: /My Health/ })).toBeVisible();
   }
 });
 
@@ -474,8 +480,8 @@ test("robots.txt permits public crawling without requiring an unconfigured sitem
 
 test("homepage navigation identifies the current page", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator('.sidebar-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
-  await expect(page.locator('.mobile-bottom-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
+  await expect(page.locator('.sidebar-nav a[href="/"]')).toHaveAttribute("aria-current", "page");
+  await expect(page.locator('.mobile-bottom-nav a[href="/"]')).toHaveAttribute("aria-current", "page");
 });
 
 

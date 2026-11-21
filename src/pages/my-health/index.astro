@@ -1,0 +1,48 @@
+---
+import ExperienceLayout from "../../layouts/ExperienceLayout.astro";
+---
+<ExperienceLayout title="My Health — RIDWANAH" description="A privacy-first preview of the personal wellbeing tools planned for RIDWANAH. No cycle dates or personal health details are collected here." activeSection="my-health">
+  <div class="rw-page">
+    <header class="rw-page-hero rw-page-hero-pink">
+      <span class="rw-eyebrow rw-eyebrow-dark">YOUR SPACE, YOUR PACE</span>
+      <h1>Get to know<br /><em>yourself better.</em></h1>
+      <p>Personal wellbeing tools should feel useful, private and fully in your control. Here's the direction we're building toward.</p>
+      <span class="rw-hero-stamp">PRIVATE BY DESIGN</span>
+    </header>
+
+    <section class="rw-privacy-callout" aria-labelledby="privacy-preview-title">
+      <span aria-hidden="true">⌑</span><div><strong id="privacy-preview-title">A note about your privacy</strong><p>This is an interface preview only. Cycle dates, symptoms, moods and reminders are not being collected or saved by this page.</p></div>
+    </section>
+
+    <section class="rw-content-section" aria-labelledby="my-health-tools-title">
+      <div class="rw-section-heading"><div><span class="rw-eyebrow rw-eyebrow-dark">YOUR PERSONAL TOOLKIT</span><h2 id="my-health-tools-title">Tools that put you first.</h2><p>These cards show the planned experience; personal tracking is not active yet.</p></div></div>
+      <div class="rw-health-tool-grid">
+        <article class="rw-health-tool rw-health-tool-cycle">
+          <span class="rw-tool-icon" aria-hidden="true">♡</span><span class="rw-preview-tag">TRACKER PREVIEW</span>
+          <h3>Cycle & period tracker</h3>
+          <p>A private place to log cycle dates, notice patterns and learn about menstrual health — with estimates clearly labelled as estimates.</p>
+          <ul><li>Cycle calendar and period logs</li><li>Optional symptom and mood notes</li><li>Gentle, user-controlled reminders</li></ul>
+          <div class="rw-tool-footnote">No dates or symptoms are requested or stored in this preview.</div>
+        </article>
+        <article class="rw-health-tool rw-health-tool-reminders">
+          <span class="rw-tool-icon" aria-hidden="true">◷</span><span class="rw-preview-tag">CONCEPT PREVIEW</span>
+          <h3>Gentle reminders</h3>
+          <p>Optional nudges you choose for yourself, such as a check-in or a reminder to revisit a saved learning resource.</p>
+          <ul><li>Off by default</li><li>Easy to change or turn off</li><li>No surprise notifications</li></ul>
+          <div class="rw-tool-footnote">No reminders are currently scheduled.</div>
+        </article>
+        <article class="rw-health-tool rw-health-tool-checkin">
+          <span class="rw-tool-icon" aria-hidden="true">✳</span><span class="rw-preview-tag">CONCEPT PREVIEW</span>
+          <h3>Everyday check-in</h3>
+          <p>A low-pressure space to reflect on how you're feeling and find relevant learning resources when you need them.</p>
+          <ul><li>Optional, not a daily obligation</li><li>Supportive language, never a diagnosis</li><li>Privacy choices made clear</li></ul>
+          <div class="rw-tool-footnote">Check-in entries are not enabled or saved here.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="rw-privacy-footer">
+      <span aria-hidden="true">✦</span><div><strong>Your health information belongs to you.</strong><p>Before personal tools launch, RIDWANAH will need clear privacy controls, secure storage decisions and simple ways to export or delete information.</p><a href="/privacy">Read the current privacy notice ↗</a></div>
+    </section>
+  </div>
+</ExperienceLayout>

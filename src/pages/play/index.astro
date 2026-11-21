@@ -1,0 +1,145 @@
+---
+import ExperienceLayout from "../../layouts/ExperienceLayout.astro";
+
+const quizQuestions = [
+  {
+    prompt: "You see a health claim going viral. What's the smartest first move?",
+    answers: ["Share it because lots of people reposted it", "Check who published it and when", "Trust the most dramatic caption"],
+    correctIndex: 1,
+    explanation: "A source and publication date help you check where the claim came from and whether the information may have changed."
+  },
+  {
+    prompt: "A health update includes a number. What helps you understand it?",
+    answers: ["The post's emoji count", "The source and date behind the number", "Whether your friend shared it"],
+    correctIndex: 1,
+    explanation: "Numbers need context. Check the original publisher, the date and what the figure actually measures."
+  },
+  {
+    prompt: "An AI tool answers a personal medical question. What's the safest way to use it?",
+    answers: ["Treat it as a final diagnosis", "Use it for general learning and seek qualified care for personal concerns", "Change prescribed treatment based only on its reply"],
+    correctIndex: 1,
+    explanation: "AI can help explain general information, but it cannot replace an assessment by a qualified healthcare professional."
+  }
+];
+---
+<ExperienceLayout title="Play & Learn — RIDWANAH" description="Try a quick health-information literacy quiz. Learn to spot useful sources and ask better questions." activeSection="play">
+  <div class="rw-page">
+    <header class="rw-page-hero rw-page-hero-yellow">
+      <span class="rw-eyebrow rw-eyebrow-dark">NO GRADES. NO PRESSURE. JUST KNOWLEDGE.</span>
+      <h1>Play a little.<br /><em>Know a lot.</em></h1>
+      <p>Quick challenges to help you think critically about the health information you see every day.</p>
+      <span class="rw-hero-stamp">PLAY / LEARN / REPEAT</span>
+    </header>
+
+    <section class="rw-quiz-wrap" aria-labelledby="quiz-title">
+      <div class="rw-quiz-heading">
+        <div><span class="rw-eyebrow rw-eyebrow-dark">TODAY'S QUICK CHALLENGE</span><h2 id="quiz-title">Scroll smart: Health info edition</h2><p>Three questions. One tiny brain workout.</p></div>
+        <span class="rw-quiz-count" id="quiz-progress" aria-live="polite">Question 1 of 3</span>
+      </div>
+      <div class="rw-quiz-panel" id="rw-quiz">
+        {quizQuestions.map((question, questionIndex) => (
+          <section class="rw-quiz-question" data-quiz-question data-correct={question.correctIndex} data-explanation={question.explanation} hidden={questionIndex !== 0}>
+            <div class="rw-quiz-number">QUESTION 0{questionIndex + 1}</div>
+            <h3>{question.prompt}</h3>
+            <div class="rw-quiz-answers">
+              {question.answers.map((answer, answerIndex) => (
+                <button class="rw-quiz-answer" type="button" data-answer={answerIndex}>{answer}<span aria-hidden="true">↗</span></button>
+              ))}
+            </div>
+          </section>
+        ))}
+        <p class="rw-quiz-feedback" id="quiz-feedback" aria-live="polite" hidden></p>
+        <button class="rw-button rw-button-dark rw-quiz-next" id="quiz-next" type="button" hidden>Next question <span aria-hidden="true">→</span></button>
+        <section class="rw-quiz-result" id="quiz-result" hidden aria-live="polite">
+          <span class="rw-result-spark" aria-hidden="true">✦</span><h3>That's a wrap.</h3><p id="quiz-score"></p><p>Keep checking sources, dates and context whenever health information crosses your feed.</p>
+          <button class="rw-button rw-button-lime" id="quiz-retry" type="button">Play again ↻</button>
+        </section>
+      </div>
+      <p class="rw-quiz-note">This is a health-information literacy activity, not a medical test or a measure of your health.</p>
+    </section>
+
+    <section class="rw-play-ideas">
+      <div><span class="rw-eyebrow rw-eyebrow-dark">MORE WAYS TO LEARN</span><h2>Play formats we're shaping.</h2></div>
+      <div class="rw-idea-grid">
+        <article><span aria-hidden="true">✳</span><h3>Myth or fact?</h3><p>Pause before you pass it on. Check the claim, then see the explanation.</p><small>FORMAT PREVIEW</small></article>
+        <article><span aria-hidden="true">◇</span><h3>What would you do?</h3><p>Explore everyday scenarios and learn how to make informed choices.</p><small>FORMAT PREVIEW</small></article>
+        <article><span aria-hidden="true">↗</span><h3>Quick challenges</h3><p>Short activities that turn useful knowledge into a habit.</p><small>FORMAT PREVIEW</small></article>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const quizRoot = document.querySelector<HTMLElement>("#rw-quiz");
+    const questions = Array.from(quizRoot?.querySelectorAll<HTMLElement>("[data-quiz-question]") ?? []);
+    const progress = document.querySelector<HTMLElement>("#quiz-progress");
+    const feedback = document.querySelector<HTMLElement>("#quiz-feedback");
+    const nextButton = document.querySelector<HTMLButtonElement>("#quiz-next");
+    const result = document.querySelector<HTMLElement>("#quiz-result");
+    const scoreText = document.querySelector<HTMLElement>("#quiz-score");
+    const retryButton = document.querySelector<HTMLButtonElement>("#quiz-retry");
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    function showQuestion(index: number) {
+      questions.forEach((question, questionIndex) => { question.hidden = questionIndex !== index; });
+      if (progress) progress.textContent = "Question " + (index + 1) + " of " + questions.length;
+      if (feedback) feedback.hidden = true;
+      if (nextButton) {
+        nextButton.hidden = true;
+        nextButton.innerHTML = index === questions.length - 1 ? "See my result <span aria-hidden=\"true\">→</span>" : "Next question <span aria-hidden=\"true\">→</span>";
+      }
+      answered = false;
+    }
+
+    questions.forEach((question) => {
+      const answers = Array.from(question.querySelectorAll<HTMLButtonElement>("[data-answer]"));
+      answers.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (answered) return;
+          answered = true;
+          const correct = Number(button.dataset.answer) === Number(question.dataset.correct);
+          if (correct) score += 1;
+          answers.forEach((answer) => {
+            answer.disabled = true;
+            if (Number(answer.dataset.answer) === Number(question.dataset.correct)) answer.classList.add("is-correct");
+            else if (answer === button) answer.classList.add("is-incorrect");
+          });
+          if (feedback) {
+            feedback.textContent = (correct ? "Nice — that's it. " : "Good try. Here's the useful bit. ") + (question.dataset.explanation ?? "");
+            feedback.hidden = false;
+          }
+          if (nextButton) nextButton.hidden = false;
+        });
+      });
+    });
+
+    nextButton?.addEventListener("click", () => {
+      if (!answered) return;
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion += 1;
+        showQuestion(currentQuestion);
+      } else {
+        questions.forEach((question) => { question.hidden = true; });
+        if (progress) progress.textContent = "Challenge complete";
+        if (feedback) feedback.hidden = true;
+        nextButton.hidden = true;
+        if (scoreText) scoreText.textContent = "You got " + score + " out of " + questions.length + ".";
+        if (result) result.hidden = false;
+      }
+    });
+
+    retryButton?.addEventListener("click", () => {
+      currentQuestion = 0;
+      score = 0;
+      questions.forEach((question) => {
+        question.querySelectorAll<HTMLButtonElement>("[data-answer]").forEach((button) => {
+          button.disabled = false;
+          button.classList.remove("is-correct", "is-incorrect");
+        });
+      });
+      if (result) result.hidden = true;
+      showQuestion(0);
+    });
+  </script>
+</ExperienceLayout>
