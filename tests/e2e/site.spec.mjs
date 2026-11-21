@@ -460,3 +460,13 @@ test("every public route has accessible names for button controls", async ({ pag
     expect(unnamedButtons, `Controls without an accessible-name signal on ${route}: ${JSON.stringify(unnamedButtons)}`).toEqual([]);
   }
 });
+
+
+test("robots.txt permits public crawling without requiring an unconfigured sitemap", async ({ page }) => {
+  const response = await page.request.get("/robots.txt");
+  expect(response?.ok(), "Expected robots.txt to be served").toBeTruthy();
+  const content = await response.text();
+  expect(content).toMatch(/^User-agent:\s*\*\s*$/m);
+  expect(content).toMatch(/^Allow:\s*\/\s*$/m);
+  expect(content).not.toMatch(/^Disallow:\s*\/\s*$/m);
+});
