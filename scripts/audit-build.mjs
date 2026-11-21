@@ -116,6 +116,12 @@ for (const htmlFile of htmlFiles) {
   for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
     if (!/\balt="/i.test(image[0])) accessibilityProblems.push(relative + ": image without alt text");
   }
+  for (const time of html.matchAll(/<time\b[^>]*>/gi)) {
+    const dateTime = time[0].match(/\bdatetime="([^"]+)"/i)?.[1];
+    if (!dateTime || !/^\d{4}-\d{2}-\d{2}$/.test(dateTime) || !Number.isFinite(Date.parse(dateTime)) || new Date(dateTime).toISOString().slice(0, 10) !== dateTime) {
+      accessibilityProblems.push(relative + ": time element missing a valid ISO date datetime attribute");
+    }
+  }
   for (const frame of html.matchAll(/<iframe\b[^>]*>/gi)) {
     if (!/\btitle="/i.test(frame[0])) accessibilityProblems.push(relative + ": iframe without title");
   }
