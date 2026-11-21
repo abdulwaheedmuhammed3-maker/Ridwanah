@@ -470,3 +470,10 @@ test("robots.txt permits public crawling without requiring an unconfigured sitem
   expect(content).toMatch(/^Allow:\s*\/\s*$/m);
   expect(content).not.toMatch(/^Disallow:\s*\/\s*$/m);
 });
+
+
+test("homepage navigation identifies the current page", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('.sidebar-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
+  await expect(page.locator('.mobile-bottom-nav a[href="#overview"]')).toHaveAttribute("aria-current", "page");
+});
