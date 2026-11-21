@@ -360,3 +360,25 @@ test("current page is identified semantically in primary navigation", async ({ p
     }
   }
 });
+
+
+test("every public route has accessible names for links", async ({ page }) => {
+  for (const route of publicRoutes) {
+    await page.goto(route);
+    const unnamedLinks = await page.locator("a[href]").evaluateAll((anchors) => anchors.map((anchor) => {
+      const ariaLabel = anchor.getAttribute("aria-label")?.trim() ?? "";
+      const labelledBy = (anchor.getAttribute("aria-labelledby") ?? "").split(/\\s+/)
+        .map((id) => document.getElementById(id)?.textContent?.trim() ?? "")
+        .filter(Boolean).join(" ");
+      const clone = anchor.cloneNode(true);
+      clone.querySelectorAll('[aria-hidden="true"], [hidden]').forEach((element) => element.remove());
+      const text = clone.textContent?.replace(/\\s+/g, " ").trim() ?? "";
+      const imageAlt = Array.from(anchor.querySelectorAll("img")).map((image) => image.getAttribute("alt")?.trim() ?? "").filter(Boolean).join(" ");
+      const svgTitle = Array.from(anchor.querySelectorAll("svg title")).map((title) => title.textContent?.trim() ?? "").filter(Boolean).join(" ");
+      const title = anchor.getAttribute("title")?.trim() ?? "";
+      const name = ariaLabel || labelledBy || text || imageAlt || svgTitle || title;
+      return name ? null : { href: anchor.getAttribute("href"), markup: anchor.outerHTML.slice(0, 180) };
+    }).filter(Boolean));
+    expect(unnamedLinks, `Links without an accessible-name signal on ${route}: ${JSON.stringify(unnamedLinks)}`).toEqual([]);
+  }
+});
