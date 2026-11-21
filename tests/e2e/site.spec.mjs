@@ -75,6 +75,22 @@ test("health news region filter shows only Nigerian updates", async ({ page }) =
   await expect(page.locator("#news-results-count")).toContainText("Showing 2 updates");
 });
 
+test("health news publication dates use valid machine-readable ISO dates", async ({ page }) => {
+  await page.goto("/news/");
+  const dates = page.locator("[data-news-card] time");
+  await expect(dates).toHaveCount(5);
+  const values = await dates.evaluateAll((nodes) => nodes.map((node) => ({
+    datetime: node.getAttribute("datetime"),
+    text: node.textContent?.trim() ?? ""
+  })));
+  for (const value of values) {
+    expect(value.datetime).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Number.isFinite(Date.parse(value.datetime ?? ""))).toBe(true);
+    expect(new Date(value.datetime ?? "").toISOString().slice(0, 10)).toBe(value.datetime);
+    expect(new Date(value.text).toISOString().slice(0, 10)).toBe(value.datetime);
+  }
+});
+
 test("unknown routes use the custom not-found page", async ({ page }) => {
   const response = await page.goto("/route-that-does-not-exist/");
   expect(response?.status()).toBe(404);
