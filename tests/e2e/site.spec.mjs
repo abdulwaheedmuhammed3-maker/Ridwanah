@@ -437,3 +437,26 @@ test("health library and video filters announce selected state and reset it", as
   await expect(infectionPrevention).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("[data-video-card]:visible")).toHaveCount(2);
 });
+
+
+test("every public route has accessible names for button controls", async ({ page }) => {
+  for (const route of publicRoutes) {
+    await page.goto(route);
+    const unnamedButtons = await page.locator("button, [role=button], input[type=button], input[type=submit], input[type=reset]").evaluateAll((controls) => controls.map((control) => {
+      const ariaLabel = control.getAttribute("aria-label")?.trim() ?? "";
+      const labelledBy = (control.getAttribute("aria-labelledby") ?? "").split(/\\s+/)
+        .map((id) => document.getElementById(id)?.textContent?.trim() ?? "")
+        .filter(Boolean).join(" ");
+      const clone = control.cloneNode(true);
+      clone.querySelectorAll('[aria-hidden="true"], [hidden]').forEach((element) => element.remove());
+      const text = clone.textContent?.replace(/\\s+/g, " ").trim() ?? "";
+      const imageAlt = Array.from(control.querySelectorAll("img")).map((image) => image.getAttribute("alt")?.trim() ?? "").filter(Boolean).join(" ");
+      const svgTitle = Array.from(control.querySelectorAll("svg title")).map((title) => title.textContent?.trim() ?? "").filter(Boolean).join(" ");
+      const title = control.getAttribute("title")?.trim() ?? "";
+      const value = control.getAttribute("value")?.trim() ?? "";
+      const name = ariaLabel || labelledBy || text || imageAlt || svgTitle || title || value;
+      return name ? null : { tag: control.tagName, markup: control.outerHTML.slice(0, 180) };
+    }).filter(Boolean));
+    expect(unnamedButtons, `Controls without an accessible-name signal on ${route}: ${JSON.stringify(unnamedButtons)}`).toEqual([]);
+  }
+});
