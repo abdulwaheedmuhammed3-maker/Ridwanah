@@ -42,6 +42,9 @@ const sectionTitles: Record<Section, string> = {
 const pageTitle = sectionTitles[activeSection];
 const discoverActive = ["discover", "health", "watch", "prevention", "awareness"].includes(activeSection);
 const alertActive = ["alert", "news"].includes(activeSection);
+const mobileDiscoverActive = discoverActive || alertActive;
+const discoverParentCurrent = activeSection === "discover" ? "page" : discoverActive ? "location" : undefined;
+const mobileDiscoverCurrent = activeSection === "discover" ? "page" : mobileDiscoverActive ? "location" : undefined;
 const isExact = (section: Section) => activeSection === section;
 ---
 <BaseLayout title={title} description={description} robots={robots}>
@@ -56,7 +59,7 @@ const isExact = (section: Section) => activeSection === section;
       <div class="rw-nav-label">YOUR SPACE</div>
       <nav class="sidebar-nav rw-sidebar-nav" aria-label="Primary navigation">
         <a class:list={["nav-item", "rw-nav-item", isExact("home") && "active"]} href="/" aria-current={isExact("home") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">⌂</span><span>Home</span></a>
-        <a class:list={["nav-item", "rw-nav-item", discoverActive && "active"]} href="/discover" aria-current={isExact("discover") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">✳</span><span>Discover</span></a>
+        <a class:list={["nav-item", "rw-nav-item", discoverActive && "active"]} href="/discover" aria-current={discoverParentCurrent}><span class="rw-nav-icon" aria-hidden="true">✳</span><span>Discover</span></a>
         <a class:list={["nav-item", "rw-nav-item", isExact("play") && "active"]} href="/play" aria-current={isExact("play") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">◇</span><span>Play & learn</span></a>
         <a class:list={["nav-item", "rw-nav-item", isExact("ask") && "active"]} href="/ask" aria-current={isExact("ask") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">✦</span><span>Ask RIDWANAH</span><span class="rw-nav-mini">AI preview</span></a>
         <a class:list={["nav-item", "rw-nav-item", isExact("my-health") && "active"]} href="/my-health" aria-current={isExact("my-health") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">♡</span><span>My Health</span></a>
@@ -65,9 +68,17 @@ const isExact = (section: Section) => activeSection === section;
       <div class="rw-nav-label rw-nav-label-spaced">EXPLORE</div>
       <nav class="sidebar-nav rw-sidebar-nav" aria-label="Explore navigation">
         <a class:list={["nav-item", "rw-nav-item", isExact("health") && "active"]} href="/health" aria-current={isExact("health") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">▤</span><span>Health library</span></a>
-        <a class:list={["nav-item", "rw-nav-item", alertActive && "active"]} href="/alert" aria-current={isExact("alert") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">◉</span><span>RIDWANAH Alert</span></a>
+        <a class:list={["nav-item", "rw-nav-item", isExact("prevention") && "active"]} href="/prevention" aria-current={isExact("prevention") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">＋</span><span>Prevention</span></a>
+        <a class:list={["nav-item", "rw-nav-item", isExact("awareness") && "active"]} href="/awareness" aria-current={isExact("awareness") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">◎</span><span>Awareness</span></a>
+        <a class:list={["nav-item", "rw-nav-item", isExact("alert") && "active"]} href="/alert" aria-current={isExact("alert") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">◉</span><span>RIDWANAH Alert</span></a>
         <a class:list={["nav-item", "rw-nav-item", isExact("watch") && "active"]} href="/watch" aria-current={isExact("watch") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">▷</span><span>Watch & learn</span></a>
         <a class:list={["nav-item", "rw-nav-item", isExact("news") && "active"]} href="/news" aria-current={isExact("news") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">▧</span><span>Health news</span></a>
+      </nav>
+
+      <div class="rw-nav-label rw-nav-label-spaced">ABOUT</div>
+      <nav class="sidebar-nav rw-sidebar-nav" aria-label="About navigation">
+        <a class:list={["nav-item", "rw-nav-item", isExact("about") && "active"]} href="/about" aria-current={isExact("about") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">♡</span><span>About RIDWANAH</span></a>
+        <a class:list={["nav-item", "rw-nav-item", isExact("editorial") && "active"]} href="/editorial-policy" aria-current={isExact("editorial") ? "page" : undefined}><span class="rw-nav-icon" aria-hidden="true">✓</span><span>Content standards</span></a>
       </nav>
 
       <div class="rw-sidebar-note">
@@ -106,7 +117,7 @@ const isExact = (section: Section) => activeSection === section;
 
     <nav class="mobile-bottom-nav rw-mobile-nav" aria-label="Mobile navigation">
       <a class:list={["mobile-nav-item", "rw-mobile-nav-item", isExact("home") && "selected"]} href="/" aria-current={isExact("home") ? "page" : undefined}><span aria-hidden="true">⌂</span><small>Home</small></a>
-      <a class:list={["mobile-nav-item", "rw-mobile-nav-item", discoverActive && "selected"]} href="/discover" aria-current={isExact("discover") ? "page" : undefined}><span aria-hidden="true">✳</span><small>Discover</small></a>
+      <a class:list={["mobile-nav-item", "rw-mobile-nav-item", mobileDiscoverActive && "selected"]} href="/discover" aria-current={mobileDiscoverCurrent}><span aria-hidden="true">✳</span><small>Discover</small></a>
       <a class:list={["mobile-nav-item", "rw-mobile-nav-item", isExact("play") && "selected"]} href="/play" aria-current={isExact("play") ? "page" : undefined}><span aria-hidden="true">◇</span><small>Play</small></a>
       <a class:list={["mobile-nav-item", "rw-mobile-nav-item", isExact("ask") && "selected"]} href="/ask" aria-current={isExact("ask") ? "page" : undefined}><span aria-hidden="true">✦</span><small>Ask</small></a>
       <a class:list={["mobile-nav-item", "rw-mobile-nav-item", isExact("my-health") && "selected"]} href="/my-health" aria-current={isExact("my-health") ? "page" : undefined}><span aria-hidden="true">♡</span><small>My Health</small></a>
