@@ -48,6 +48,12 @@ const accessibilityProblems = [];
 let pendingReviewArticleCount = 0;
 const metadataValues = { titles: new Map(), descriptions: new Map() };
 
+// Broad length bounds catch unusually short or long search metadata without
+// treating pixel-width estimates as exact ranking or display requirements.
+function metadataCharacterCount(value) {
+  return value.replace(/&(?:amp|lt|gt|quot|apos|#\d+|#x[\da-f]+);/gi, "x").length;
+}
+
 for (const htmlFile of htmlFiles) {
   const html = htmlContentByPath.get(htmlFile) ?? "";
   const relative = path.relative(dist, htmlFile);
@@ -76,6 +82,10 @@ for (const htmlFile of htmlFiles) {
   const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
   if (titleMatch) {
     const titleValue = titleMatch[1].trim();
+    const titleLength = metadataCharacterCount(titleValue);
+    if (titleLength < 10 || titleLength > 70) {
+      metadataProblems.push(relative + ": title length outside broad 10–70 character bounds (" + titleLength + ")");
+    }
     const existingTitle = metadataValues.titles.get(titleValue);
     if (existingTitle) metadataProblems.push(relative + ": duplicate title shared with " + existingTitle);
     else metadataValues.titles.set(titleValue, relative);
@@ -83,6 +93,10 @@ for (const htmlFile of htmlFiles) {
   const descriptionMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
   if (descriptionMatch) {
     const descriptionValue = descriptionMatch[1].trim();
+    const descriptionLength = metadataCharacterCount(descriptionValue);
+    if (descriptionLength < 40 || descriptionLength > 180) {
+      metadataProblems.push(relative + ": meta description length outside broad 40–180 character bounds (" + descriptionLength + ")");
+    }
     const existingDescription = metadataValues.descriptions.get(descriptionValue);
     if (existingDescription) metadataProblems.push(relative + ": duplicate meta description shared with " + existingDescription);
     else metadataValues.descriptions.set(descriptionValue, relative);
